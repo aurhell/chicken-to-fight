@@ -43,7 +43,41 @@ Inspect all modified files for:
 
 ---
 
-## Step 4 — Analyze changes and group into atomic commits
+## Step 4 — DDD / Clean Architecture
+
+For each modified file under `server/`, verify the dependency direction is respected.
+
+**Dependency rules:**
+
+| Layer | Can import from | Forbidden |
+|-------|-----------------|-----------|
+| `server/domain/**` | nothing (pure TS/types only) | `application`, `infrastructure`, `api`, framework packages (`h3`, `drizzle-orm`, `@nuxt`) |
+| `server/application/**` | `domain` | `infrastructure`, `api`, framework packages (`h3`, `@nuxt`) |
+| `server/infrastructure/**` | `domain`, `application` | `api` |
+| `server/api/**` | anything server-side | — |
+
+**Run these checks:**
+
+```bash
+# Domain must not leak toward outer layers or framework
+grep -rn "from ['\"].*infrastructure\|from ['\"].*application\|from ['\"]h3\|from ['\"]drizzle" \
+  server/domain/ --include="*.ts" | grep -v "\.spec\."
+
+# Application must stay framework-agnostic
+grep -rn "from ['\"].*infrastructure\|from ['\"].*\/api\/\|from ['\"]h3\|from ['\"]@nuxt" \
+  server/application/ --include="*.ts" | grep -v "\.spec\."
+
+# Infrastructure must not import from api handlers
+grep -rn "from ['\"].*\/api\/" \
+  server/infrastructure/ --include="*.ts"
+```
+
+- **Pass**: empty output on all three commands
+- **Fail**: list each violation with file + line, do not proceed
+
+---
+
+## Step 5 — Analyze changes and group into atomic commits
 
 ```bash
 git diff HEAD --name-only   # unstaged + staged
@@ -69,7 +103,7 @@ If all changes form a single coherent unit → one commit is correct, no need to
 
 ---
 
-## Step 5 — Propose commits
+## Step 6 — Propose commits
 
 For each group, propose:
 1. The exact files to stage (`git add <files>`)
@@ -122,6 +156,7 @@ For each group, propose:
 - [x] Lint — clean
 - [x] Dependency audit — no high/critical vulnerabilities
 - [x] Codebase security scan — nothing found
+- [x] DDD / Clean Architecture — no layer violations
 
 ✅ All checks passed.
 
@@ -142,6 +177,7 @@ git add server/domain/chicken/entities/Chicken.ts server/domain/chicken/value-ob
 - [x] Lint — clean
 - [x] Dependency audit — no high/critical vulnerabilities
 - [x] Codebase security scan — nothing found
+- [x] DDD / Clean Architecture — no layer violations
 
 ✅ All checks passed.
 
@@ -171,6 +207,18 @@ git add eslint.config.ts .npmrc tsconfig.node.json
 - [ ] Codebase security scan — 1 issue found
 
   ❌ server/infrastructure/db/index.ts:3 — hardcoded credential: `password123`
+
+```
+
+```
+## Pre-commit checks
+
+- [x] Lint — clean
+- [x] Dependency audit — no high/critical vulnerabilities
+- [x] Codebase security scan — nothing found
+- [ ] DDD / Clean Architecture — 1 violation found
+
+  ❌ server/application/auth/RegisterUseCase.ts:2 — forbidden import from infrastructure layer
 
 🚫 Fix the issues above before proposing commits.
 ```
