@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "composite": true,
+    "skipLibCheck": true,
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types"
+    ]
+  },
+  "include": [
+    "types/**/*.d.ts",
+    "eslint.config.ts",
+    "drizzle.config.ts",
+    "tailwind.config.ts",
+    "nuxt.config.ts"
+  ]
+}
