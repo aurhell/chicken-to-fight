@@ -16,6 +16,7 @@
     "eslint.config.ts",
     "drizzle.config.ts",
     "tailwind.config.ts",
-    "nuxt.config.ts"
+    "nuxt.config.ts",
+    "vitest.config.ts"
   ]
 }

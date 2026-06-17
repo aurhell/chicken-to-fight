@@ -51,17 +51,6 @@ const config = defineConfigWithVueTs(
     ],
   },
 
-  // Test files configuration
-  {
-    name: "rules/test-files",
-    files: ["tests/**/*.{ts,js}"],
-    languageOptions: {
-      parserOptions: {
-        parser: "@typescript-eslint/parser",
-        requireConfigFile: false,
-      },
-    },
-  },
 
   // Vue & TS recommended configurations
   pluginVue.configs["flat/strongly-recommended"],
