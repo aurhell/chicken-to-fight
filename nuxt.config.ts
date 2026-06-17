@@ -17,5 +17,12 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     databaseUrl: process.env.DATABASE_URL,
+    sessionSecret: process.env.SESSION_SECRET,
+  },
+
+  nitro: {
+    externals: {
+      external: ["@node-rs/argon2"],
+    },
   },
 })
