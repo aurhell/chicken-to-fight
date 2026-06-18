@@ -1,6 +1,6 @@
 # UI Design System — Chicken to Fight Revival
 
-Pixel art aesthetic inspired by NES.css. Zero external UI dependencies — tout est maison.
+Pixel art aesthetic inspired by NES.css. Zero external UI dependencies — everything is hand-rolled.
 
 ---
 
@@ -8,102 +8,102 @@ Pixel art aesthetic inspired by NES.css. Zero external UI dependencies — tout 
 
 | Token | Font | Usage |
 |---|---|---|
-| `font-pixel` | Press Start 2P | Titres, labels importants, erreurs |
-| `font-ui` | Pixelify Sans | Tout le reste (corps, boutons, inputs) |
+| `font-pixel` | Press Start 2P | Titles, important labels, error messages |
+| `font-ui` | Pixelify Sans | Everything else (body, buttons, inputs) |
 
-**Règle critique** : Press Start 2P est une police bitmap. Elle doit être utilisée **uniquement à des multiples de 8px** : `text-[8px]`, `text-base` (16px), `text-2xl` (24px), `text-[32px]`… Toute autre taille sera flou.
+**Critical rule**: Press Start 2P is a bitmap font. It must only be used at **multiples of 8px**: `text-[8px]`, `text-base` (16px), `text-2xl` (24px), `text-[32px]`… Any other size will look blurry.
 
 ---
 
-## Couleurs
+## Colors
 
-Toutes préfixées `pixel-` pour éviter les conflits avec Tailwind.
+All prefixed `pixel-` to avoid conflicts with Tailwind's built-in utilities.
 
 | Token | Hex | Usage |
 |---|---|---|
-| `pixel-black` | `#181018` | Bordures, texte, fond header |
-| `pixel-white` | `#f8f0e8` | Fond des cartes |
-| `pixel-sand` | `#f0d080` | Fond de page |
-| `pixel-straw` | `#c89828` | Hover des éléments dorés |
-| `pixel-gold` | `#f8b800` | Texte sur fond sombre, PO, accents |
-| `pixel-brown` | `#804818` | Textes secondaires sur fond clair |
-| `pixel-red` / `pixel-red-light` | `#c02020` / `#f04040` | Danger, REVIVAL, erreurs |
-| `pixel-green` / `pixel-green-light` | `#188020` / `#38c040` | Succès |
-| `pixel-blue` / `pixel-blue-light` | `#1840b8` / `#4878f0` | Liens |
-| `pixel-gray` / `pixel-gray-light` | `#887878` / `#c8b8b8` | Textes désactivés |
+| `pixel-black` | `#181018` | Borders, text, header background |
+| `pixel-white` | `#f8f0e8` | Card backgrounds |
+| `pixel-sand` | `#f0d080` | Page background |
+| `pixel-straw` | `#c89828` | Hover state for gold elements |
+| `pixel-gold` | `#f8b800` | Text on dark backgrounds, PO currency, accents |
+| `pixel-brown` | `#804818` | Secondary text on light backgrounds |
+| `pixel-red` / `pixel-red-light` | `#c02020` / `#f04040` | Danger, REVIVAL label, errors |
+| `pixel-green` / `pixel-green-light` | `#188020` / `#38c040` | Success states |
+| `pixel-blue` / `pixel-blue-light` | `#1840b8` / `#4878f0` | Links |
+| `pixel-gray` / `pixel-gray-light` | `#887878` / `#c8b8b8` | Disabled text |
 
 ---
 
-## Bordures & Ombres
+## Borders & Shadows
 
-**Règle** : toutes les bordures font **4px** (`border-4`). Les bordures 2px n'existent pas dans ce DS.
+**Rule**: all borders are **4px** (`border-4`). 2px borders do not exist in this design system.
 
-| Token | Valeur | Usage |
+| Token | Value | Usage |
 |---|---|---|
-| `shadow-pixel` | `8px 8px 0 0 #181018` | Ombre portée standard |
-| `shadow-pixel-sm` | `4px 4px 0 0 #181018` | Ombre portée réduite (ghost button) |
-| `shadow-pixel-lg` | `16px 16px 0 0 #181018` | Grande ombre (modals, éléments proéminents) |
-| `shadow-pixel-nes` | `inset 0 0 0 4px + 8px 8px` | Double cadre NES — signature des conteneurs |
+| `shadow-pixel` | `8px 8px 0 0 #181018` | Standard drop shadow |
+| `shadow-pixel-sm` | `4px 4px 0 0 #181018` | Reduced drop shadow (ghost button) |
+| `shadow-pixel-lg` | `16px 16px 0 0 #181018` | Large shadow (modals, prominent elements) |
+| `shadow-pixel-nes` | `inset 0 0 0 4px + 8px 8px` | NES double-frame — signature for containers |
 
-**CSS classes** (via plugin Tailwind) :
+**CSS classes** (via Tailwind plugin):
 
-- `.pixel-border` — `border-4` + double cadre NES + ombre 8px → pour les cartes/conteneurs
-- `.pixel-border-sm` — `border-4` + ombre 4px → pour les éléments plus discrets
-- `.pixel-inset` — `border-4` + ombre inset → pour les champs "enfoncés"
+- `.pixel-border` — `border-4` + NES double-frame + 8px shadow → for cards and containers
+- `.pixel-border-sm` — `border-4` + 4px shadow → for subtler elements
+- `.pixel-inset` — `border-4` + inset shadow → for "sunken" fields
 
 ---
 
-## Composants
+## Components
 
 ### PixelCard
-Conteneur principal. Utilise `shadow-pixel-nes` pour le double cadre NES signature.
+Main container. Uses `shadow-pixel-nes` for the signature NES double-frame look.
 ```html
-<PixelCard title="Optionnel">contenu</PixelCard>
+<PixelCard title="Optional">content</PixelCard>
 ```
-- Fond `pixel-white`, bordure 4px, ombre NES
-- Titre : barre noire `font-pixel text-base`
-- Contenu : padding `p-8`
+- Background `pixel-white`, 4px border, NES shadow
+- Title bar: black strip, `font-pixel text-base`
+- Content: `p-8` padding
 
 ### PixelButton
 ```html
 <PixelButton variant="primary|danger|ghost" :disabled="bool">Label</PixelButton>
 ```
-- `primary` — fond gold, ombre 8px
-- `danger` — fond rouge, ombre 8px
-- `ghost` — transparent, ombre 4px
-- Touch target minimum : `min-h-[44px]`
-- Effet press : `translate 8px` (colle à l'ombre 8px)
+- `primary` — gold background, 8px shadow
+- `danger` — red background, 8px shadow
+- `ghost` — transparent, 4px shadow
+- Minimum touch target: `min-h-[44px]`
+- Press effect: `translate 8px` (matches the 8px shadow depth)
 
 ### PixelInput
 ```html
 <PixelInput id="x" v-model="val" label="Label" :error="msg" />
 ```
-- Fond `pixel-sand`, bordure 4px
-- Erreur en `font-pixel text-[8px] text-pixel-red`
+- Background `pixel-sand`, 4px border
+- Error message: `font-pixel text-[8px] text-pixel-red`
 
 ### GameTitle
 ```html
 <GameTitle compact variant="dark|light" />
 ```
-- Default (login/register) : titre `text-2xl`, REVIVAL `text-base`
-- `compact` (header) : titre `text-base`, REVIVAL `text-[8px]`
-- `light` : gold + rouge clair (fond sombre)
-- `dark` : noir + rouge (fond clair)
+- Default (login/register): title `text-2xl`, REVIVAL `text-base`
+- `compact` (header): title `text-base`, REVIVAL `text-[8px]`
+- `light`: gold + light red (dark backgrounds)
+- `dark`: black + red (light backgrounds)
 
 ---
 
 ## Layout
 
-- **Mobile-first** : styles par défaut = mobile, `md:` pour desktop
-- **Game layout** (`layouts/game.vue`) : header sticky + contenu + bottom nav mobile
-- **Bottom nav** : fixée en bas, `h-16`, visible mobile uniquement (`md:hidden`)
-- **Touch targets** : minimum `44px` sur tous les éléments interactifs
+- **Mobile-first**: default styles target mobile, `md:` breakpoint for desktop
+- **Game layout** (`layouts/game.vue`): sticky header + scrollable content + mobile bottom nav
+- **Bottom nav**: fixed to bottom, `h-16`, mobile only (`md:hidden`)
+- **Touch targets**: minimum `44px` on all interactive elements
 
 ---
 
-## Règles globales
+## Global rules
 
-- `border-radius: 0` partout — aucun arrondi, jamais
-- `image-rendering: pixelated` sur tous les `img`, `canvas`, `svg`
-- Pas d'antialiasing (`-webkit-font-smoothing: none`)
-- Fond de page : `pixel-sand` (`#f0d080`)
+- `border-radius: 0` everywhere — no rounded corners, ever
+- `image-rendering: pixelated` on all `img`, `canvas`, `svg`
+- No antialiasing (`-webkit-font-smoothing: none`)
+- Page background: `pixel-sand` (`#f0d080`)
