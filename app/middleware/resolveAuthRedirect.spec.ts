@@ -17,14 +17,14 @@ describe("resolveAuthRedirect", () => {
   describe("given an unauthenticated user", () => {
     describe("when visiting a protected route", () => {
       it("then should redirect to /login", () => {
-        expect(resolveAuthRedirect(null, "/dashboard")).toBe("/login")
+        expect(resolveAuthRedirect(null, "dashboard")).toBe("/login")
       })
     })
 
     describe("when visiting a public route", () => {
       it("then should not redirect", () => {
-        expect(resolveAuthRedirect(null, "/login")).toBeNull()
-        expect(resolveAuthRedirect(null, "/register")).toBeNull()
+        expect(resolveAuthRedirect(null, "login")).toBeNull()
+        expect(resolveAuthRedirect(null, "register")).toBeNull()
       })
     })
   })
@@ -32,14 +32,14 @@ describe("resolveAuthRedirect", () => {
   describe("given an authenticated user", () => {
     describe("when visiting a public route", () => {
       it("then should redirect to /dashboard", () => {
-        expect(resolveAuthRedirect(alice, "/login")).toBe("/dashboard")
-        expect(resolveAuthRedirect(alice, "/register")).toBe("/dashboard")
+        expect(resolveAuthRedirect(alice, "login")).toBe("/dashboard")
+        expect(resolveAuthRedirect(alice, "register")).toBe("/dashboard")
       })
     })
 
     describe("when visiting a protected route", () => {
       it("then should not redirect", () => {
-        expect(resolveAuthRedirect(alice, "/dashboard")).toBeNull()
+        expect(resolveAuthRedirect(alice, "dashboard")).toBeNull()
       })
     })
   })

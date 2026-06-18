@@ -6,7 +6,29 @@ export default defineNuxtConfig({
   modules: [
     "@pinia/nuxt",
     "@nuxtjs/tailwindcss",
+    "@nuxtjs/i18n",
   ],
+
+  i18n: {
+    locales: [
+      {
+        code: "fr",
+        language: "fr-FR",
+        name: "Français",
+        file: "fr.json",
+      },
+      {
+        code: "en",
+        language: "en-US",
+        name: "English",
+        file: "en.json",
+      },
+    ],
+    defaultLocale: "fr",
+    strategy: "prefix_except_default",
+    lazy: true,
+    vueI18n: "./i18n/i18n.config.ts",
+  },
 
   // Game is entirely behind auth — SSR brings no value and causes hydration issues
   ssr: false,

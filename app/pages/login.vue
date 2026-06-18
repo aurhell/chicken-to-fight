@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const auth = useAuthStore()
 const email = ref("")
 const password = ref("")
@@ -11,7 +12,7 @@ async function submit() {
   try {
     await auth.login(email.value, password.value)
   } catch(e) {
-    error.value = e instanceof Error ? e.message : "Login failed"
+    error.value = e instanceof Error ? e.message : t("Login failed")
   } finally {
     loading.value = false
   }
@@ -21,15 +22,18 @@ async function submit() {
 <template>
   <div class="flex min-h-screen items-center justify-center bg-amber-50 p-4">
     <div class="w-full max-w-sm rounded-2xl bg-white p-8 shadow-lg">
+      <div class="mb-4 flex justify-end">
+        <LanguageSwitcher />
+      </div>
       <div class="mb-8 text-center">
         <div class="mb-3 text-5xl">
           🐔
         </div>
         <h1 class="text-2xl font-bold text-amber-900">
-          Chicken to Fight
+          {{ t("Chicken to Fight") }}
         </h1>
         <p class="mt-1 text-sm text-amber-700">
-          Connecte-toi à ton élevage
+          {{ t("Log in to your farm") }}
         </p>
       </div>
 
@@ -57,7 +61,7 @@ async function submit() {
           <label
             class="mb-1 block text-sm font-medium text-gray-700"
             for="password"
-          >Mot de passe</label>
+          >{{ t("Password") }}</label>
           <input
             id="password"
             v-model="password"
@@ -81,18 +85,18 @@ async function submit() {
           class="w-full rounded-lg bg-amber-500 py-2 text-sm font-semibold text-white transition-colors hover:bg-amber-600 disabled:opacity-50"
           type="submit"
         >
-          {{ loading ? "Connexion…" : "Se connecter" }}
+          {{ loading ? t("Logging in…") : t("Log in") }}
         </button>
       </form>
 
       <p class="mt-6 text-center text-sm text-gray-500">
-        Pas encore de compte ?
-        <NuxtLink
+        {{ t("No account yet?") }}
+        <NuxtLinkLocale
           class="font-medium text-amber-600 hover:underline"
           to="/register"
         >
-          S'inscrire
-        </NuxtLink>
+          {{ t("Sign up") }}
+        </NuxtLinkLocale>
       </p>
     </div>
   </div>
