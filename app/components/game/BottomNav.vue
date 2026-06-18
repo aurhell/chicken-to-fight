@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { computed } from "vue"
+import { useI18n } from "vue-i18n"
+import { useRoute } from "vue-router"
+
+import { useLocalePath } from "#imports"
+
 const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
@@ -10,9 +16,9 @@ const items = computed(() => [
     to: "/dashboard",
   },
   {
-    icon: "⚔️",
-    label: t("Arena"),
-    to: null,
+    icon: "🎰",
+    label: t("Games"),
+    to: "/minigames/grat-chicken",
   },
   {
     icon: "🏆",

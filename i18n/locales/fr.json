@@ -22,5 +22,19 @@
   "Farm": "Élevage",
   "Arena": "Arène",
   "Ranking": "Classement",
-  "Settings": "Paramètres"
+  "Settings": "Paramètres",
+  "Games": "Jeux",
+  "Grat'Chicken": "Grat'Chicken",
+  "Find 3 aligned chickens to win": "Trouve 3 poulets alignés pour gagner",
+  "{n} PO": "{n} PO",
+  "{n} free plays per day": "{n} grattages gratuits par jour",
+  "{n} play left": "0 grattage restant | 1 grattage restant | {n} grattages restants",
+  "Scratch!": "Gratte !",
+  "Play again": "Rejouer",
+  "You won!": "Gagné !",
+  "No luck this time…": "Pas de chance cette fois…",
+  "Come back tomorrow": "Reviens demain",
+  "Loading…": "Chargement…",
+  "Play failed": "Erreur de jeu",
+  "Scratch each card to reveal it": "Gratte chaque carte pour la révéler"
 }
