@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import { ref } from "vue"
+import { useI18n } from "vue-i18n"
+
 import LanguageSwitcher from "~/components/LanguageSwitcher.vue"
 import GameTitle from "~/components/game/GameTitle.vue"
 import PixelButton from "~/components/ui/PixelButton.vue"
 import PixelCard from "~/components/ui/PixelCard.vue"
 import PixelInput from "~/components/ui/PixelInput.vue"
+import { useAuthStore } from "~/stores/auth"
 
 const { t } = useI18n()
 const auth = useAuthStore()

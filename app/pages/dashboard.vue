@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n"
+
 import PixelCard from "~/components/ui/PixelCard.vue"
 
 definePageMeta({ layout: "game" })

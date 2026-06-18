@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n"
+
+import { useSwitchLocalePath } from "#imports"
+
 withDefaults(defineProps<{
   variant?: "dark" | "light"
 }>(), { variant: "dark" })

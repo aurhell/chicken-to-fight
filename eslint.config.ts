@@ -41,6 +41,9 @@ const config = defineConfigWithVueTs(
                   "gray-light": "#c8b8b8",
                 },
               },
+              animation: {
+                "gold-float": "gold-float 2.2s ease-out forwards",
+              },
               boxShadow: {
                 pixel: "8px 8px 0 0 #181018",
                 "pixel-sm": "4px 4px 0 0 #181018",
@@ -116,10 +119,10 @@ const config = defineConfigWithVueTs(
         "warn",
         {
           ignores: [
-            "login",
-            "register",
             "dashboard",
             "game",
+            "login",
+            "register",
           ],
         },
       ],
@@ -411,6 +414,14 @@ const config = defineConfigWithVueTs(
         "error",
         { max: 1 },
       ],
+    },
+  },
+
+  {
+    name: "rules/spec-files",
+    files: ["**/*.spec.ts"],
+    rules: {
+      "no-magic-numbers": "off",
     },
   },
 

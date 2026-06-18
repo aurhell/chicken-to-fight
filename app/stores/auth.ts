@@ -1,3 +1,7 @@
+import { navigateTo } from "nuxt/app"
+import { defineStore } from "pinia"
+import { ref } from "vue"
+
 import type { AuthUser } from "~/types/auth"
 
 export const useAuthStore = defineStore("auth", () => {

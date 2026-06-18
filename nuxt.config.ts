@@ -24,6 +24,7 @@ export default defineNuxtConfig({
   },
 
   components: false,
+  imports: { autoImport: false },
 
   tailwindcss: {
     cssPath: "~/assets/css/main.css",

@@ -25,6 +25,7 @@
     "nuxt": "^4.4.8",
     "postgres": "^3.4.9",
     "vue": "^3.5.35",
+    "vue-i18n": "^11.4.6",
     "vue-router": "^5.1.0"
   },
   "devDependencies": {
