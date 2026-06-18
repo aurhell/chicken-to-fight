@@ -15,14 +15,14 @@ const model = defineModel<string>()
     <label
       v-if="label"
       :for="id"
-      class="font-ui text-sm font-bold text-pixel-black"
+      class="font-ui text-base font-bold text-pixel-black"
     >
       {{ label }}
     </label>
     <input
       :id="id"
       v-model="model"
-      class="border-2 border-pixel-black bg-pixel-sand px-3 py-2 font-ui text-base text-pixel-black placeholder:text-pixel-gray focus:border-pixel-straw focus:outline-none"
+      class="border-4 border-pixel-black bg-pixel-sand p-3 font-ui text-base text-pixel-black placeholder:text-pixel-gray focus:border-pixel-straw focus:outline-none"
       v-bind="$attrs"
     >
     <span

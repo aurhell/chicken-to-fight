@@ -33,7 +33,7 @@ function isActive(to: string | null): boolean {
 </script>
 
 <template>
-  <nav class="fixed inset-x-0 bottom-0 z-50 border-t-2 border-pixel-black bg-pixel-black md:hidden">
+  <nav class="fixed inset-x-0 bottom-0 z-50 border-t-4 border-pixel-black bg-pixel-black md:hidden">
     <ul class="flex h-16 items-stretch">
       <li
         v-for="item in items"
@@ -47,7 +47,7 @@ function isActive(to: string | null): boolean {
           :class="isActive(item.to) ? 'text-pixel-gold' : 'text-pixel-gray'"
         >
           <span class="text-xl leading-none">{{ item.icon }}</span>
-          <span class="font-pixel text-[6px] leading-none">{{ item.label }}</span>
+          <span class="font-ui text-xs leading-none">{{ item.label }}</span>
         </NuxtLink>
         <button
           v-else
@@ -55,7 +55,7 @@ function isActive(to: string | null): boolean {
           class="flex flex-1 cursor-not-allowed flex-col items-center justify-center gap-1 text-pixel-gray opacity-40"
         >
           <span class="text-xl leading-none">{{ item.icon }}</span>
-          <span class="font-pixel text-[6px] leading-none">{{ item.label }}</span>
+          <span class="font-ui text-xs leading-none">{{ item.label }}</span>
         </button>
       </li>
     </ul>
