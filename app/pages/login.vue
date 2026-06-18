@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import LanguageSwitcher from "~/components/LanguageSwitcher.vue"
+import PixelButton from "~/components/ui/PixelButton.vue"
+import PixelCard from "~/components/ui/PixelCard.vue"
+import PixelInput from "~/components/ui/PixelInput.vue"
+
 const { t } = useI18n()
 const auth = useAuthStore()
 const email = ref("")
@@ -20,84 +25,69 @@ async function submit() {
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-amber-50 p-4">
-    <div class="w-full max-w-sm rounded-2xl bg-white p-8 shadow-lg">
+  <div class="flex min-h-dvh items-center justify-center bg-pixel-sand p-4 md:p-8">
+    <div class="w-full max-w-sm">
       <div class="mb-4 flex justify-end">
         <LanguageSwitcher />
       </div>
-      <div class="mb-8 text-center">
-        <div class="mb-3 text-5xl">
-          🐔
-        </div>
-        <h1 class="text-2xl font-bold text-amber-900">
-          {{ t("Chicken to Fight") }}
-        </h1>
-        <p class="mt-1 text-sm text-amber-700">
-          {{ t("Log in to your farm") }}
-        </p>
-      </div>
 
-      <form
-        class="space-y-4"
-        @submit.prevent="submit"
-      >
-        <div>
-          <label
-            class="mb-1 block text-sm font-medium text-gray-700"
-            for="email"
-          >Email</label>
-          <input
+      <PixelCard>
+        <div class="mb-8 text-center">
+          <div class="mb-4 text-6xl leading-none">
+            🐔
+          </div>
+          <h1 class="font-pixel text-base leading-loose text-pixel-black">
+            {{ t("Chicken to Fight") }}
+          </h1>
+          <p class="mt-3 font-ui text-base text-pixel-brown">
+            {{ t("Log in to your farm") }}
+          </p>
+        </div>
+
+        <form
+          class="flex flex-col gap-5"
+          @submit.prevent="submit"
+        >
+          <PixelInput
             id="email"
             v-model="email"
+            :label="'Email'"
             autocomplete="email"
-            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
             placeholder="coach@example.com"
             required
             type="email"
-          >
-        </div>
+          />
 
-        <div>
-          <label
-            class="mb-1 block text-sm font-medium text-gray-700"
-            for="password"
-          >{{ t("Password") }}</label>
-          <input
+          <PixelInput
             id="password"
             v-model="password"
+            :label="t('Password')"
+            :error="error ?? undefined"
             autocomplete="current-password"
-            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
             placeholder="••••••••"
             required
             type="password"
+          />
+
+          <PixelButton
+            :disabled="loading"
+            class="mt-1 w-full"
+            type="submit"
           >
-        </div>
+            {{ loading ? t("Logging in…") : t("Log in") }}
+          </PixelButton>
+        </form>
 
-        <p
-          v-if="error"
-          class="text-sm text-red-600"
-        >
-          {{ error }}
+        <p class="mt-6 text-center font-ui text-sm text-pixel-gray">
+          {{ t("No account yet?") }}
+          <NuxtLinkLocale
+            class="font-ui font-bold text-pixel-blue underline hover:text-pixel-blue-light"
+            to="/register"
+          >
+            {{ t("Sign up") }}
+          </NuxtLinkLocale>
         </p>
-
-        <button
-          :disabled="loading"
-          class="w-full rounded-lg bg-amber-500 py-2 text-sm font-semibold text-white transition-colors hover:bg-amber-600 disabled:opacity-50"
-          type="submit"
-        >
-          {{ loading ? t("Logging in…") : t("Log in") }}
-        </button>
-      </form>
-
-      <p class="mt-6 text-center text-sm text-gray-500">
-        {{ t("No account yet?") }}
-        <NuxtLinkLocale
-          class="font-medium text-amber-600 hover:underline"
-          to="/register"
-        >
-          {{ t("Sign up") }}
-        </NuxtLinkLocale>
-      </p>
+      </PixelCard>
     </div>
   </div>
 </template>

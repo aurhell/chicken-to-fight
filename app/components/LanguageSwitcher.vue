@@ -1,4 +1,8 @@
 <script setup lang="ts">
+withDefaults(defineProps<{
+  variant?: "dark" | "light"
+}>(), { variant: "dark" })
+
 const { locale, locales } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
 </script>
@@ -11,18 +15,20 @@ const switchLocalePath = useSwitchLocalePath()
     >
       <span
         v-if="index > 0"
-        class="text-gray-300"
+        :class="variant === 'light' ? 'text-pixel-gray' : 'text-gray-300'"
       >|</span>
       <NuxtLink
         v-if="loc.code !== locale"
         :to="switchLocalePath(loc.code)"
-        class="text-amber-600 hover:underline"
+        class="font-pixel text-[9px]"
+        :class="variant === 'light' ? 'text-pixel-gold hover:text-pixel-straw' : 'text-pixel-blue hover:text-pixel-blue-light'"
       >
         {{ loc.code.toUpperCase() }}
       </NuxtLink>
       <span
         v-else
-        class="font-semibold text-amber-900"
+        class="font-pixel text-[9px] font-bold"
+        :class="variant === 'light' ? 'text-pixel-white' : 'text-pixel-black'"
       >
         {{ loc.code.toUpperCase() }}
       </span>
