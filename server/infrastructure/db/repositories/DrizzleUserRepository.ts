@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { eq, sql } from "drizzle-orm"
 
 import { User } from "../../../domain/user/entities/User"
 import { db } from "../index"
@@ -42,6 +42,16 @@ export class DrizzleUserRepository implements IUserRepository {
   async create(data: CreateUserData): Promise<User> {
     const [row] = await db.insert(users).values(data).returning()
     if (!row) throw new Error("Failed to create user")
+    return this.toEntity(row)
+  }
+
+  async addGold(userId: number, amount: number): Promise<User> {
+    const [row] = await db
+      .update(users)
+      .set({ gold: sql`${users.gold} + ${amount}` })
+      .where(eq(users.id, userId))
+      .returning()
+    if (!row) throw new Error("User not found")
     return this.toEntity(row)
   }
 

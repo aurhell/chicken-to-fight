@@ -12,4 +12,5 @@ export type IUserRepository = {
   findByUsername(username: string): Promise<User | null>
   findWithHashByEmail(email: string): Promise<{ user: User; passwordHash: string } | null>
   create(data: CreateUserData): Promise<User>
+  addGold(userId: number, amount: number): Promise<User>
 }
