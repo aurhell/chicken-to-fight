@@ -3,6 +3,32 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
 
+  app: {
+    head: {
+      link: [
+        {
+          rel: "preconnect",
+          href: "https://fonts.googleapis.com", 
+        },
+        {
+          rel: "preconnect",
+          href: "https://fonts.gstatic.com",
+          crossorigin: "", 
+        },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400..700&display=swap",
+        },
+      ],
+    },
+  },
+
+  components: false,
+
+  tailwindcss: {
+    cssPath: "~/assets/css/main.css",
+  },
+
   modules: [
     "@pinia/nuxt",
     "@nuxtjs/tailwindcss",
@@ -26,8 +52,7 @@ export default defineNuxtConfig({
     ],
     defaultLocale: "fr",
     strategy: "prefix_except_default",
-    lazy: true,
-    vueI18n: "./i18n/i18n.config.ts",
+    vueI18n: "./i18n.config.ts",
   },
 
   // Game is entirely behind auth — SSR brings no value and causes hydration issues

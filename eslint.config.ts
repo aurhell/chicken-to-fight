@@ -15,10 +15,46 @@ const config = defineConfigWithVueTs(
     settings: {
       tailwindcss: {
         config: {
-          content: [
-            "./app/**/*.{vue,ts,js}",
-          ],
+          content: ["./app/**/*.{vue,ts,js}"],
+          theme: {
+            extend: {
+              fontFamily: {
+                pixel: ["\"Press Start 2P\"", "monospace"],
+                ui: ["\"Pixelify Sans\"", "sans-serif"],
+              },
+              colors: {
+                pixel: {
+                  black: "#181018",
+                  white: "#f8f0e8",
+                  sand: "#f0d080",
+                  straw: "#c89828",
+                  gold: "#f8b800",
+                  brown: "#804818",
+                  red: "#c02020",
+                  "red-light": "#f04040",
+                  green: "#188020",
+                  "green-light": "#38c040",
+                  blue: "#1840b8",
+                  "blue-light": "#4878f0",
+                  purple: "#781890",
+                  gray: "#887878",
+                  "gray-light": "#c8b8b8",
+                },
+              },
+              boxShadow: {
+                pixel: "4px 4px 0 0 #181018",
+                "pixel-sm": "2px 2px 0 0 #181018",
+                "pixel-inset": "inset 2px 2px 0 0 #181018",
+                "pixel-border": "-2px 0 0 0 #181018, 2px 0 0 0 #181018, 0 -2px 0 0 #181018, 0 2px 0 0 #181018",
+              },
+            },
+          },
         },
+        whitelist: [
+          "pixel-border",
+          "pixel-border-sm",
+          "pixel-inset",
+        ],
       },
       "import-x": {
         resolver: {
@@ -77,7 +113,12 @@ const config = defineConfigWithVueTs(
       "vue/multi-word-component-names": [
         "warn",
         {
-          ignores: [],
+          ignores: [
+            "login",
+            "register",
+            "dashboard",
+            "game",
+          ],
         },
       ],
       "vue/no-restricted-component-options": [
@@ -93,7 +134,6 @@ const config = defineConfigWithVueTs(
             "Nuxt.*",
             "NuxtPage",
             "NuxtLayout",
-            "LanguageSwitcher",
           ],
         },
       ],
