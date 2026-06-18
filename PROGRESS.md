@@ -7,6 +7,114 @@ Use `/gameplay-check` for a detailed per-layer audit at any time.
 
 ---
 
+## Milestones
+
+The game is implemented level by level. Each milestone delivers a **complete, playable gameplay loop** for a given set of levels before unlocking the next.
+
+---
+
+### Milestone 1 — Levels 1 to 3: Egg → Chick → Adolescence ❌
+
+**Goal:** a player can adopt an egg, hatch it, raise their chick, and complete the 6 required stages to unlock level 4.
+
+**Gameplay loop:**
+1. Player spends PO to adopt an egg
+2. Player turns the egg and adjusts humidity & heat for 48h (level 1)
+3. Egg hatches automatically → chick (level 2)
+4. Player feeds their chick daily (hunger, thirst, happiness, fatigue)
+5. Player picks and completes stages one at a time (level 3, 6/7 required)
+6. Player chooses a job → unlocks level 4
+
+**Bounded contexts:**
+
+| BC | What is needed |
+|----|----------------|
+| Chicken | Chicken entity, lifecycle (levels 1→3), stats (hunger/thirst/happiness/fatigue), XP |
+| Training | Stages (7 available, 6 required, one at a time), durations |
+| Economy | PO balance (read/write), adoption cost, job list |
+
+> Minimal Economy: PO balance + adoption spend only. Full shop and job income come in milestone 2.
+
+---
+
+### Milestone 2 — Level 4: Apprenti Fighter ❌
+
+**Requirements:** rank Apprenti Fighter (1,000 XP) + training equipment + job chosen
+
+**Gameplay loop:**
+1. Player earns XP through boxing sessions (30 min, +10 to +40 XP)
+2. Player buys training equipment (dumbbells, fitness room) to boost daily XP
+3. Player receives daily salary from their job
+4. Player challenges other players in PvP (+1 XP per victory)
+5. Player manages their chicken's daily fatigue
+
+**Bounded contexts:**
+
+| BC | What is needed |
+|----|----------------|
+| Chicken | Fatigue management, XP progression → rank Apprenti Fighter |
+| Training | Boxing sessions, equipment, XP potions |
+| Economy | Daily job income, shop (equipment + consumables) |
+| Combat | Basic PvP, victory resolution, XP gain |
+
+---
+
+### Milestone 3 — Levels 5 and 6: Champion → Maître ❌
+
+**Level 5 requirements:** rank Champion du ring (10,000 XP) + 4 heroes defeated  
+**Level 6 requirements:** rank Maître incontesté (80,000 XP) + 100 laying hens + victorious clan (20 wins) + bank placement > 10,000 PO
+
+**Gameplay loop:**
+1. Player fights the 4 heroes in sequence (Comte Dracula → Poulet-Garou)
+2. Player manages a laying hen farm (building, expansion, egg sales)
+3. Player creates or joins a clan and participates in clan battles (2v2, 3v3)
+4. Player places PO in the bank to generate interest
+
+**Bounded contexts:**
+
+| BC | What is needed |
+|----|----------------|
+| Chicken | XP progression up to 80,000 |
+| Combat | Hero system (4 sequential bosses), clan battles |
+| Economy | Laying hens, bank (placements + interest), advanced shop |
+| Clan | Creation, roles, recruitment, battles, statistics |
+
+---
+
+### Milestone 4 — Levels 7 to 9: Légende → Immortel ❌
+
+**Level 7 requirements:** Mimétis defeated ×10 + 5 riddles answered correctly  
+**Level 9:** no feeding required, salary replaced by a pension
+
+**Gameplay loop:**
+1. Player fights Mimétis (merges 2 hero powers simultaneously)
+2. Player answers 5 riddles correctly
+3. Chicken retires (level 8), then becomes immortal (level 9)
+4. Player receives a permanent pension instead of their job salary
+
+**Bounded contexts:**
+
+| BC | What is needed |
+|----|----------------|
+| Chicken | Retired and Immortal states, feeding exemption |
+| Combat | Mimétis (fusion boss), riddle management |
+| Economy | Salary → pension conversion |
+
+---
+
+### Milestone 5 — Minigames ❌
+
+**Outside level progression** — accessible at any time.
+
+- Tombola (weekly draw)
+- Grat'Chicken, Jackpot, Roue de la Fortune (2 free plays/day)
+- Antre du Magicien (7 PO/card)
+- Combat betting
+
+**Bounded context:** Minigames (standalone)
+
+---
+
 ## Overview
 
 | Context | Status | Notes |
