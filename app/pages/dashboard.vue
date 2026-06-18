@@ -20,7 +20,7 @@ const { t } = useI18n()
         <p class="font-ui text-base font-semibold text-pixel-brown">
           {{ t("No chicken yet") }}
         </p>
-        <p class="mt-2 font-ui text-sm text-pixel-gray">
+        <p class="mt-2 font-ui text-base text-pixel-gray">
           {{ t("Adoption coming soon…") }}
         </p>
       </div>
