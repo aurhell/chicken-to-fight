@@ -93,7 +93,15 @@ const config = defineConfigWithVueTs(
             "Nuxt.*",
             "NuxtPage",
             "NuxtLayout",
+            "LanguageSwitcher",
           ],
+        },
+      ],
+      "vue/no-restricted-syntax": [
+        "error",
+        {
+          selector: "VElement > VExpressionContainer Literal[raw=/^'/]",
+          message: "Use double quotes in Vue template mustache expressions.",
         },
       ],
     },
