@@ -75,7 +75,7 @@ Use `font-ui` (Pixelify Sans) for body text where arbitrary sizes are fine.
 
 ## Explicit imports
 
-`components: false` and `imports: { autoImport: false }` are both set — **everything must be imported explicitly**, including composables, stores, and Vue primitives.
+`components: false` is set and **all imports must be written explicitly** — composables, stores, Vue primitives, everything. Nuxt's auto-import is intentionally left enabled (disabling it breaks framework internals), but we don't rely on it: every file declares its own imports.
 
 | What | Import from |
 |------|------------|
