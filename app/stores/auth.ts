@@ -1,10 +1,11 @@
-import { navigateTo } from "nuxt/app"
 import { defineStore } from "pinia"
 import { ref } from "vue"
+import { useRouter } from "vue-router"
 
 import type { AuthUser } from "~/types/auth"
 
 export const useAuthStore = defineStore("auth", () => {
+  const router = useRouter()
   const user = ref<AuthUser | null>(null)
 
   async function fetchMe() {
@@ -25,7 +26,7 @@ export const useAuthStore = defineStore("auth", () => {
       },
     })
     user.value = data.user
-    await navigateTo("/dashboard")
+    await router.push("/dashboard")
   }
 
   async function register(username: string, email: string, password: string) {
@@ -38,13 +39,13 @@ export const useAuthStore = defineStore("auth", () => {
       },
     })
     user.value = data.user
-    await navigateTo("/dashboard")
+    await router.push("/dashboard")
   }
 
   async function logout() {
     await $fetch("/api/auth/logout", { method: "POST" })
     user.value = null
-    await navigateTo("/login")
+    await router.push("/login")
   }
 
   return {

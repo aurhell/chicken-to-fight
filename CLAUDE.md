@@ -84,11 +84,13 @@ Use `font-ui` (Pixelify Sans) for body text where arbitrary sizes are fine.
 | `useLocalePath`, `useSwitchLocalePath` | `#imports` |
 | `useRoute`, `useRouter` | `vue-router` |
 | `defineStore` | `pinia` |
-| `navigateTo` | `nuxt/app` |
+| `useRouter` (for navigation) | `vue-router` |
 | Stores (`useAuthStore`…) | `~/stores/<name>` |
 | Composables (`useSound`…) | `~/composables/<name>` |
 
 Vue compiler macros (`defineProps`, `defineEmits`, `withDefaults`, `defineExpose`, `definePageMeta`) and `$fetch` are globals — no import needed.
+
+**Never import `navigateTo` from `nuxt/app` in Pinia stores.** It creates a circular dependency with Nuxt's renderer initialization and causes a TDZ crash at startup. Use `useRouter().push()` instead.
 
 ---
 
