@@ -40,10 +40,13 @@ export default {
         },
       },
       boxShadow: {
-        "pixel":        "4px 4px 0 0 #181018",
-        "pixel-sm":     "2px 2px 0 0 #181018",
-        "pixel-inset":  "inset 2px 2px 0 0 #181018",
-        "pixel-border": "-2px 0 0 0 #181018, 2px 0 0 0 #181018, 0 -2px 0 0 #181018, 0 2px 0 0 #181018",
+        "pixel":        "8px 8px 0 0 #181018",
+        "pixel-sm":     "4px 4px 0 0 #181018",
+        "pixel-lg":     "16px 16px 0 0 #181018",
+        // NES.css signature: outer drop shadow + inner frame
+        "pixel-nes":    "inset 0 0 0 4px #181018, 8px 8px 0 0 #181018",
+        "pixel-inset":  "inset 4px 4px 0 0 #181018",
+        "pixel-border": "-4px 0 0 0 #181018, 4px 0 0 0 #181018, 0 -4px 0 0 #181018, 0 4px 0 0 #181018",
       },
     },
   },
@@ -56,16 +59,16 @@ export default {
       })
       addComponents({
         ".pixel-border": {
-          border: "2px solid #181018",
-          "box-shadow": "4px 4px 0 0 #181018",
+          border: "4px solid #181018",
+          "box-shadow": "inset 0 0 0 4px #181018, 8px 8px 0 0 #181018",
         },
         ".pixel-border-sm": {
-          border: "2px solid #181018",
-          "box-shadow": "2px 2px 0 0 #181018",
+          border: "4px solid #181018",
+          "box-shadow": "4px 4px 0 0 #181018",
         },
         ".pixel-inset": {
-          border: "2px solid #181018",
-          "box-shadow": "inset 2px 2px 0 0 #181018",
+          border: "4px solid #181018",
+          "box-shadow": "inset 0 0 0 4px #181018",
         },
       })
     }),
