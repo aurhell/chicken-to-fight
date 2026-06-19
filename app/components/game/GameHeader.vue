@@ -5,6 +5,7 @@ import { useRoute } from "vue-router"
 
 import { useLocalePath } from "#imports"
 import goldSoundSrc from "~/assets/sounds/gold.mp3"
+import paySoundSrc from "~/assets/sounds/pay.mp3"
 import LanguageSwitcher from "~/components/LanguageSwitcher.vue"
 import GameTitle from "~/components/game/GameTitle.vue"
 import PixelButton from "~/components/ui/PixelButton.vue"
@@ -36,14 +37,16 @@ function isActive(to: string): boolean {
 const goldDelta = ref<number | null>(null)
 const animKey = ref(0)
 const { play: playGoldSound } = useSound(goldSoundSrc)
+const { play: playPaySound } = useSound(paySoundSrc)
 
 watch(() => auth.user?.gold, (newVal, oldVal) => {
   if (newVal == null || oldVal == null) return
   const delta = newVal - oldVal
-  if (delta <= 0) return
+  if (delta === 0) return
   goldDelta.value = delta
   animKey.value++
-  playGoldSound()
+  if (delta > 0) playPaySound()
+  else playGoldSound()
 })
 </script>
 
@@ -84,9 +87,12 @@ watch(() => auth.user?.gold, (newVal, oldVal) => {
           <span
             v-if="goldDelta"
             :key="animKey"
-            class="pointer-events-none absolute left-1/2 top-[-4px] -translate-x-1/2 animate-gold-float whitespace-nowrap font-ui text-base font-bold text-[#f8c840]"
+            class="pointer-events-none absolute left-1/2 whitespace-nowrap font-ui text-base font-bold"
+            :class="goldDelta > 0
+              ? 'top-[-4px] animate-gold-float text-[#f8c840]'
+              : 'top-[4px] animate-gold-sink text-pixel-red'"
           >
-            +{{ goldDelta }} PO
+            {{ goldDelta > 0 ? "+" : "" }}{{ goldDelta }} PO
           </span>
         </span>
         <span class="hidden font-ui text-base text-pixel-gray-light md:block">

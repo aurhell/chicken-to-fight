@@ -46,9 +46,16 @@ export default {
           "80%":  { opacity: "0.6", transform: "translateY(-20px) scale(1)" },
           "100%": { opacity: "0", transform: "translateY(-28px) scale(0.9)" },
         },
+        "gold-sink": {
+          "0%":   { opacity: "1", transform: "translateY(0) scale(1)" },
+          "20%":  { opacity: "1", transform: "translateY(4px) scale(1.15)" },
+          "80%":  { opacity: "0.6", transform: "translateY(20px) scale(1)" },
+          "100%": { opacity: "0", transform: "translateY(28px) scale(0.9)" },
+        },
       },
       animation: {
         "gold-float": "gold-float 2.2s ease-out forwards",
+        "gold-sink": "gold-sink 2.2s ease-out forwards",
       },
       boxShadow: {
         "pixel":        "8px 8px 0 0 #181018",

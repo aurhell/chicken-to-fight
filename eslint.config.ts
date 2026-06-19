@@ -43,6 +43,7 @@ const config = defineConfigWithVueTs(
               },
               animation: {
                 "gold-float": "gold-float 2.2s ease-out forwards",
+                "gold-sink": "gold-sink 2.2s ease-out forwards",
               },
               boxShadow: {
                 pixel: "8px 8px 0 0 #181018",
