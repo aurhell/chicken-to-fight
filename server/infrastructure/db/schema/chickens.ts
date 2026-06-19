@@ -17,5 +17,8 @@ export const chickens = pgTable("chickens", {
   happiness: integer("happiness").notNull().default(DEFAULT_HAPPINESS),
   fatigue: integer("fatigue").notNull().default(0),
   hatchAt: timestamp("hatch_at"),
+  humidityAdjustedAt: timestamp("humidity_adjusted_at").notNull().defaultNow(),
+  temperatureAdjustedAt: timestamp("temperature_adjusted_at").notNull().defaultNow(),
+  turnedAt: timestamp("turned_at").notNull().defaultNow(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 })
