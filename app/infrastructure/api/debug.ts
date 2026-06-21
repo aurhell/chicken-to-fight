@@ -6,6 +6,12 @@ export function useDebugApi() {
   return {
     addGold: (amount: number) =>
       api.post<{ gold: number }>("/api/debug/add-gold", { amount }),
+    refillInventory: () =>
+      api.post<{ water: number; flour: number }>("/api/debug/refill-inventory", {}),
+    drainChick: () =>
+      api.post<{ ok: boolean }>("/api/debug/drain-chick", {}),
+    fastGrowChick: () =>
+      api.post<{ ok: boolean }>("/api/debug/fast-grow-chick", {}),
     fastHatch: (id: number) =>
       api.post<{ ok: boolean }>(`/api/debug/chicken/${id}/fast-hatch`, {}),
     driftCare: (id: number) =>

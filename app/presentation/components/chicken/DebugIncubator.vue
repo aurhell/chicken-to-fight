@@ -4,7 +4,7 @@ import { ref } from "vue"
 import { useAuthStore } from "~/application/auth/useAuthStore"
 import { useDebugApi } from "~/infrastructure/api/debug"
 
-const props = defineProps<{ eggId?: number }>()
+const props = defineProps<{ eggId?: number; chickId?: number }>()
 const emit = defineEmits<{ refresh: [] }>()
 
 const auth = useAuthStore()
@@ -31,6 +31,36 @@ async function addGold() {
   try {
     await api.addGold(ADD_GOLD_AMOUNT)
     await auth.fetchMe()
+  } finally {
+    loading.value = false
+  }
+}
+
+async function refillInventory() {
+  loading.value = true
+  try {
+    await api.refillInventory()
+    emit("refresh")
+  } finally {
+    loading.value = false
+  }
+}
+
+async function drainChick() {
+  loading.value = true
+  try {
+    await api.drainChick()
+    emit("refresh")
+  } finally {
+    loading.value = false
+  }
+}
+
+async function fastGrowChick() {
+  loading.value = true
+  try {
+    await api.fastGrowChick()
+    emit("refresh")
   } finally {
     loading.value = false
   }
@@ -70,6 +100,29 @@ async function addGold() {
         @click="eggAction('reset-care')"
       >
         ✅ Reset care
+      </button>
+    </template>
+    <template v-if="chickId">
+      <button
+        class="rounded bg-blue-400 px-2 py-1 font-ui text-xs text-black disabled:opacity-50"
+        :disabled="loading"
+        @click="refillInventory"
+      >
+        💧🌾 +20 eau/farine
+      </button>
+      <button
+        class="rounded bg-red-600 px-2 py-1 font-ui text-xs text-white disabled:opacity-50"
+        :disabled="loading"
+        @click="drainChick"
+      >
+        🔴 Vider faim & soif (0%)
+      </button>
+      <button
+        class="rounded bg-purple-500 px-2 py-1 font-ui text-xs text-white disabled:opacity-50"
+        :disabled="loading"
+        @click="fastGrowChick"
+      >
+        ⏩ Passer 3 jours
       </button>
     </template>
   </div>

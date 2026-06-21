@@ -20,6 +20,7 @@ export default defineEventHandler(async(event) => {
   const patched = new Chicken(
     chicken.id, chicken.userId, chicken.name, chicken.level, chicken.xp, chicken.stats,
     new Date(now.getTime() + FAST_HATCH_DELAY_MS),
+    chicken.fedAt, chicken.wateredAt,
     chicken.humidityAdjustedAt, chicken.temperatureAdjustedAt, chicken.turnedAt,
   )
   await repo.save(patched)

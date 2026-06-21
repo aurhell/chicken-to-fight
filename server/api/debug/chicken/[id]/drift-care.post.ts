@@ -20,7 +20,7 @@ export default defineEventHandler(async(event) => {
   const stale = new Date(Date.now() - (CARE_DRIFT_H + DRIFT_EXTRA_H) * MS_PER_HOUR)
   const patched = new Chicken(
     chicken.id, chicken.userId, chicken.name, chicken.level, chicken.xp, chicken.stats,
-    chicken.hatchAt, stale, stale, stale,
+    chicken.hatchAt, chicken.fedAt, chicken.wateredAt, stale, stale, stale,
   )
   await repo.save(patched)
   return { ok: true }

@@ -17,7 +17,7 @@ export default defineEventHandler(async(event) => {
   const now = new Date()
   const patched = new Chicken(
     chicken.id, chicken.userId, chicken.name, chicken.level, chicken.xp, chicken.stats,
-    chicken.hatchAt, now, now, now,
+    chicken.hatchAt, chicken.fedAt, chicken.wateredAt, now, now, now,
   )
   await repo.save(patched)
   return { ok: true }
