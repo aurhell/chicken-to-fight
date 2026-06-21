@@ -2,27 +2,23 @@
 import { computed, onMounted, onUnmounted, ref } from "vue"
 import { useI18n } from "vue-i18n"
 
-import PixelButton from "~/components/ui/PixelButton.vue"
-import PixelCard from "~/components/ui/PixelCard.vue"
+import { useChickenApi, type EggStatus  } from "~/infrastructure/api/chicken"
+import PixelButton from "~/presentation/components/ui/PixelButton.vue"
+import PixelCard from "~/presentation/components/ui/PixelCard.vue"
 
-export type EggStatus = {
-  id: number
-  name: string
-  hatchAt: string
-  humidityOk: boolean
-  temperatureOk: boolean
-  turnedOk: boolean
-}
+import type { HatchOutcome } from "~/domain/chicken/HatchOutcome"
 
 const props = defineProps<{ egg: EggStatus }>()
-const emit = defineEmits<{ hatched: [] }>()
+const emit = defineEmits<{ outcome: [HatchOutcome] }>()
 
 const { t } = useI18n()
+const api = useChickenApi()
 
 const humidityOk = ref(props.egg.humidityOk)
 const temperatureOk = ref(props.egg.temperatureOk)
 const turnedOk = ref(props.egg.turnedOk)
 const loadingAction = ref<string | null>(null)
+const hatching = ref(false)
 
 const hatchAt = new Date(props.egg.hatchAt)
 
@@ -37,10 +33,21 @@ function pad(n: number): string {
   return String(n).padStart(2, "0")
 }
 
+async function resolveHatch() {
+  if (hatching.value) return
+  hatching.value = true
+  clearInterval(ticker)
+  const data = await api.hatch(props.egg.id)
+  emit("outcome", {
+    result: data.result,
+    chickenName: props.egg.name, 
+  })
+}
+
 onMounted(() => {
   ticker = setInterval(() => {
     timeLeft.value = Math.max(0, hatchAt.getTime() - Date.now())
-    if (timeLeft.value === 0) emit("hatched")
+    if (timeLeft.value === 0) resolveHatch()
   }, 1_000)
 })
 
@@ -49,13 +56,7 @@ onUnmounted(() => clearInterval(ticker))
 async function care(action: "humidity" | "temperature" | "turn") {
   loadingAction.value = action
   try {
-    const result = await $fetch<{ humidityOk: boolean; temperatureOk: boolean; turnedOk: boolean }>(
-      `/api/chicken/${props.egg.id}/care`,
-      {
-        method: "POST",
-        body: { action }, 
-      },
-    )
+    const result = await api.care(props.egg.id, action)
     humidityOk.value = result.humidityOk
     temperatureOk.value = result.temperatureOk
     turnedOk.value = result.turnedOk

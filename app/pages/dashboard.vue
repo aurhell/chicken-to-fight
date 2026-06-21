@@ -1,41 +1,20 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
+import { onMounted } from "vue"
 import { useI18n } from "vue-i18n"
 
-import DebugIncubator from "~/components/chicken/DebugIncubator.vue"
-import EggAdoptForm, { type EggStatus } from "~/components/chicken/EggAdoptForm.vue"
-import EggIncubator from "~/components/chicken/EggIncubator.vue"
-import { useAuthStore } from "~/stores/auth"
-
-const isDev = import.meta.dev
+import { useIncubation } from "~/application/chicken/useIncubation"
+import ChickenCard from "~/presentation/components/chicken/ChickenCard.vue"
+import DebugIncubator from "~/presentation/components/chicken/DebugIncubator.vue"
+import EggAdoptForm from "~/presentation/components/chicken/EggAdoptForm.vue"
+import EggIncubator from "~/presentation/components/chicken/EggIncubator.vue"
+import EggOutcomeScreen from "~/presentation/components/chicken/EggOutcomeScreen.vue"
 
 definePageMeta({ layout: "game" })
 
 const { t } = useI18n()
-const auth = useAuthStore()
+const isDev = import.meta.dev
 
-const egg = ref<EggStatus | null>(null)
-const loading = ref(true)
-
-async function fetchStatus() {
-  loading.value = true
-  try {
-    const data = await $fetch<{ egg: EggStatus | null }>("/api/chicken/status")
-    egg.value = data.egg
-  } finally {
-    loading.value = false
-  }
-}
-
-function onAdopted(newEgg: EggStatus) {
-  egg.value = newEgg
-  auth.fetchMe()
-}
-
-function onHatched() {
-  egg.value = null
-  auth.fetchMe()
-}
+const { egg, chick, loading, outcome, fetchStatus, onAdopted, onOutcome, dismissOutcome, onSold } = useIncubation()
 
 onMounted(fetchStatus)
 </script>
@@ -53,11 +32,24 @@ onMounted(fetchStatus)
       {{ t("Loading…") }}
     </div>
 
+    <EggOutcomeScreen
+      v-else-if="outcome"
+      :result="outcome.result"
+      :chicken-name="outcome.chickenName"
+      @dismiss="dismissOutcome"
+    />
+
     <EggIncubator
       v-else-if="egg"
       :key="egg.hatchAt"
       :egg="egg"
-      @hatched="onHatched"
+      @outcome="onOutcome"
+    />
+
+    <ChickenCard
+      v-else-if="chick"
+      :chick="chick"
+      @sold="onSold"
     />
 
     <EggAdoptForm

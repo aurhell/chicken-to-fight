@@ -1,3 +1,6 @@
+import { useLocalePath } from "#imports"
+import { useAuthStore } from "~/application/auth/useAuthStore"
+
 import { resolveAuthRedirect } from "./resolveAuthRedirect"
 
 export default defineNuxtRouteMiddleware((to) => {

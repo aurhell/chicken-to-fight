@@ -4,13 +4,13 @@ import { useI18n } from "vue-i18n"
 import { useRoute } from "vue-router"
 
 import { useLocalePath } from "#imports"
+import { useAuthStore } from "~/application/auth/useAuthStore"
 import goldSoundSrc from "~/assets/sounds/gold.mp3"
 import paySoundSrc from "~/assets/sounds/pay.mp3"
-import LanguageSwitcher from "~/components/LanguageSwitcher.vue"
-import GameTitle from "~/components/game/GameTitle.vue"
-import PixelButton from "~/components/ui/PixelButton.vue"
 import { useSound } from "~/composables/useSound"
-import { useAuthStore } from "~/stores/auth"
+import LanguageSwitcher from "~/presentation/components/LanguageSwitcher.vue"
+import GameTitle from "~/presentation/components/game/GameTitle.vue"
+import PixelButton from "~/presentation/components/ui/PixelButton.vue"
 
 const { t } = useI18n()
 const localePath = useLocalePath()

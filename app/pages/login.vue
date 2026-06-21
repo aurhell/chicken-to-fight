@@ -2,12 +2,12 @@
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
 
-import LanguageSwitcher from "~/components/LanguageSwitcher.vue"
-import GameTitle from "~/components/game/GameTitle.vue"
-import PixelButton from "~/components/ui/PixelButton.vue"
-import PixelCard from "~/components/ui/PixelCard.vue"
-import PixelInput from "~/components/ui/PixelInput.vue"
-import { useAuthStore } from "~/stores/auth"
+import { useAuthStore } from "~/application/auth/useAuthStore"
+import LanguageSwitcher from "~/presentation/components/LanguageSwitcher.vue"
+import GameTitle from "~/presentation/components/game/GameTitle.vue"
+import PixelButton from "~/presentation/components/ui/PixelButton.vue"
+import PixelCard from "~/presentation/components/ui/PixelCard.vue"
+import PixelInput from "~/presentation/components/ui/PixelInput.vue"
 
 const { t } = useI18n()
 const auth = useAuthStore()

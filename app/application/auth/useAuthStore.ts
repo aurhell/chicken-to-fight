@@ -2,15 +2,18 @@ import { defineStore } from "pinia"
 import { ref } from "vue"
 import { useRouter } from "vue-router"
 
-import type { AuthUser } from "~/types/auth"
+import { useAuthApi } from "~/infrastructure/api/auth"
+
+import type { AuthUser } from "~/domain/auth/AuthUser"
 
 export const useAuthStore = defineStore("auth", () => {
   const router = useRouter()
+  const api = useAuthApi()
   const user = ref<AuthUser | null>(null)
 
   async function fetchMe() {
     try {
-      const data = await $fetch<{ user: AuthUser }>("/api/auth/me")
+      const data = await api.fetchMe()
       user.value = data.user
     } catch {
       user.value = null
@@ -18,32 +21,19 @@ export const useAuthStore = defineStore("auth", () => {
   }
 
   async function login(email: string, password: string) {
-    const data = await $fetch<{ user: AuthUser }>("/api/auth/login", {
-      method: "POST",
-      body: {
-        email,
-        password,
-      },
-    })
+    const data = await api.login(email, password)
     user.value = data.user
     await router.push("/dashboard")
   }
 
   async function register(username: string, email: string, password: string) {
-    const data = await $fetch<{ user: AuthUser }>("/api/auth/register", {
-      method: "POST",
-      body: {
-        username,
-        email,
-        password,
-      },
-    })
+    const data = await api.register(username, email, password)
     user.value = data.user
     await router.push("/dashboard")
   }
 
   async function logout() {
-    await $fetch("/api/auth/logout", { method: "POST" })
+    await api.logout()
     user.value = null
     await router.push("/login")
   }
@@ -53,6 +43,6 @@ export const useAuthStore = defineStore("auth", () => {
     fetchMe,
     login,
     register,
-    logout,
+    logout, 
   }
 })

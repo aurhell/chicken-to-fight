@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref } from "vue"
 
-import { useAuthStore } from "~/stores/auth"
+import { useAuthStore } from "~/application/auth/useAuthStore"
+import { useDebugApi } from "~/infrastructure/api/debug"
 
 const props = defineProps<{ eggId?: number }>()
 const emit = defineEmits<{ refresh: [] }>()
 
 const auth = useAuthStore()
+const api = useDebugApi()
 const loading = ref(false)
 
 const ADD_GOLD_AMOUNT = 50
@@ -15,7 +17,9 @@ async function eggAction(type: "fast-hatch" | "drift-care" | "reset-care") {
   if (!props.eggId) return
   loading.value = true
   try {
-    await $fetch(`/api/debug/chicken/${props.eggId}/${type}`, { method: "POST" })
+    if (type === "fast-hatch") await api.fastHatch(props.eggId)
+    else if (type === "drift-care") await api.driftCare(props.eggId)
+    else await api.resetCare(props.eggId)
     emit("refresh")
   } finally {
     loading.value = false
@@ -25,10 +29,7 @@ async function eggAction(type: "fast-hatch" | "drift-care" | "reset-care") {
 async function addGold() {
   loading.value = true
   try {
-    await $fetch("/api/debug/add-gold", {
-      method: "POST",
-      body: { amount: ADD_GOLD_AMOUNT }, 
-    })
+    await api.addGold(ADD_GOLD_AMOUNT)
     await auth.fetchMe()
   } finally {
     loading.value = false
@@ -54,7 +55,7 @@ async function addGold() {
         :disabled="loading"
         @click="eggAction('fast-hatch')"
       >
-        ⚡ Hatch now
+        ⚡ Hatch in 10s
       </button>
       <button
         class="rounded bg-blue-500 px-2 py-1 font-ui text-xs text-white disabled:opacity-50"

@@ -2,24 +2,17 @@
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
 
-import PixelButton from "~/components/ui/PixelButton.vue"
-import PixelCard from "~/components/ui/PixelCard.vue"
-import PixelInput from "~/components/ui/PixelInput.vue"
+import { useChickenApi, type EggStatus  } from "~/infrastructure/api/chicken"
+import PixelButton from "~/presentation/components/ui/PixelButton.vue"
+import PixelCard from "~/presentation/components/ui/PixelCard.vue"
+import PixelInput from "~/presentation/components/ui/PixelInput.vue"
 
 const EGG_ADOPTION_COST = 30
-
-export type EggStatus = {
-  id: number
-  name: string
-  hatchAt: string
-  humidityOk: boolean
-  temperatureOk: boolean
-  turnedOk: boolean
-}
 
 const emit = defineEmits<{ adopted: [egg: EggStatus] }>()
 
 const { t } = useI18n()
+const api = useChickenApi()
 const name = ref("")
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -29,10 +22,7 @@ async function submit() {
   loading.value = true
   error.value = null
   try {
-    const result = await $fetch<{ chicken: EggStatus; gold: number }>("/api/chicken/adopt", {
-      method: "POST",
-      body: { name: name.value.trim() },
-    })
+    const result = await api.adopt(name.value.trim())
     emit("adopted", result.chicken)
   } catch(e: unknown) {
     const msg = (e as { data?: { message?: string } })?.data?.message

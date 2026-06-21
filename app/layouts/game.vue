@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import BottomNav from "~/components/game/BottomNav.vue"
-import GameHeader from "~/components/game/GameHeader.vue"
+import BottomNav from "~/presentation/components/game/BottomNav.vue"
+import GameHeader from "~/presentation/components/game/GameHeader.vue"
 </script>
 
 <template>

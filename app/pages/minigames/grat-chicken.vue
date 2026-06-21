@@ -1,57 +1,16 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
+import { onMounted } from "vue"
 import { useI18n } from "vue-i18n"
 
-import GratChickenCard from "~/components/minigames/GratChickenCard.vue"
-import PixelButton from "~/components/ui/PixelButton.vue"
-import PixelCard from "~/components/ui/PixelCard.vue"
-import { useAuthStore } from "~/stores/auth"
-
-import type { PlayResult } from "~/server/application/minigames/PlayScratchCardUseCase"
+import { useGratChicken } from "~/application/minigames/useGratChicken"
+import GratChickenCard from "~/presentation/components/minigames/GratChickenCard.vue"
+import PixelButton from "~/presentation/components/ui/PixelButton.vue"
+import PixelCard from "~/presentation/components/ui/PixelCard.vue"
 
 definePageMeta({ layout: "game" })
 
 const { t } = useI18n()
-const auth = useAuthStore()
-
-type GameState = "idle" | "playing" | "won" | "lost"
-
-const state = ref<GameState>("idle")
-const playsRemaining = ref(0)
-const activeGrid = ref<string[] | null>(null)
-const loading = ref(false)
-const error = ref<string | null>(null)
-
-async function fetchStatus() {
-  const data = await $fetch<{ playsRemaining: number }>("/api/minigames/gratchicken/status")
-  playsRemaining.value = data.playsRemaining
-}
-
-async function play() {
-  if (loading.value) return
-  loading.value = true
-  error.value = null
-  try {
-    const result = await $fetch<PlayResult>("/api/minigames/gratchicken/play", { method: "POST" })
-    activeGrid.value = result.grid
-    playsRemaining.value = result.playsRemaining
-    state.value = "playing"
-  } catch(e) {
-    error.value = e instanceof Error ? e.message : t("Play failed")
-  } finally {
-    loading.value = false
-  }
-}
-
-function onCardCompleted(won: boolean) {
-  state.value = won ? "won" : "lost"
-  if (won) auth.fetchMe()
-}
-
-function reset() {
-  state.value = "idle"
-  activeGrid.value = null
-}
+const { state, playsRemaining, activeGrid, loading, errorKey, fetchStatus, play, onCardCompleted, reset } = useGratChicken()
 
 onMounted(fetchStatus)
 </script>
@@ -128,10 +87,10 @@ onMounted(fetchStatus)
 
       <!-- Error -->
       <p
-        v-if="error"
+        v-if="errorKey"
         class="mb-4 text-center font-pixel text-[8px] leading-relaxed text-pixel-red"
       >
-        ▶ {{ error }}
+        ▶ {{ t(errorKey) }}
       </p>
 
       <!-- CTA -->

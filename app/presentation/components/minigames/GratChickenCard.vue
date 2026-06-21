@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 
-import ScratchCanvas from "~/components/ui/ScratchCanvas.vue"
+import ScratchCanvas from "~/presentation/components/ui/ScratchCanvas.vue"
 
 /* eslint-disable no-magic-numbers */
 const WINNING_LINES = [

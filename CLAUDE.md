@@ -32,6 +32,8 @@ Page and component filenames must be **multi-word kebab-case** (`grat-chicken.vu
 
 ## Architecture — DDD layers
 
+### Backend (`server/`)
+
 Dependencies flow in one direction only:
 
 ```
@@ -46,6 +48,40 @@ domain → application → infrastructure → api
 | `server/api/` | anything server-side | — |
 
 Each bounded context (`chicken`, `combat`, `economy`, etc.) lives in its own subfolder across all layers.
+
+### Frontend (`app/`)
+
+Same direction, adapted to the Vue/Nuxt context:
+
+```
+domain → application → infrastructure → presentation
+```
+
+| Layer | Location | Contains | Can import |
+|-------|----------|----------|-----------|
+| Domain | `app/domain/` | Pure TS types and interfaces | nothing |
+| Application | `app/application/` | Pinia stores, composables with state and orchestration | domain, infrastructure |
+| Infrastructure | `app/infrastructure/api/` | `$fetch` wrappers, typed API functions | domain |
+| Presentation | `app/presentation/components/` | Vue components (UI only) | application, infrastructure, domain |
+| Nuxt-required | `pages/`, `layouts/`, `middleware/`, `plugins/` | Routing and framework hooks | application (via explicit imports) |
+
+**Rules:**
+- Components in `app/presentation/components/` never call `$fetch` directly — they use application-layer composables.
+- Pages are thin: they call one composable from `application/` and pass data to components.
+- `$fetch` lives exclusively in `app/infrastructure/api/`.
+- Types shared between frontend layers live in `app/domain/`. Types that are purely API response shapes live in `app/infrastructure/api/`.
+- **Never import from `~/server/`** in any frontend file — duplicate or move types to `app/domain/`.
+
+**Import sources (frontend):**
+
+| What | Import from |
+|------|------------|
+| `useAuthStore` | `~/application/auth/useAuthStore` |
+| Use case composables | `~/application/<context>/use<Name>` |
+| API functions | `~/infrastructure/api/<context>` |
+| Domain types | `~/domain/<context>/<Type>` |
+| Components | `~/presentation/components/<context>/<Name>.vue` |
+| `useSound` and other framework utilities | `~/composables/<name>` |
 
 ---
 
@@ -85,8 +121,15 @@ Use `font-ui` (Pixelify Sans) for body text where arbitrary sizes are fine.
 | `useRoute`, `useRouter` | `vue-router` |
 | `defineStore` | `pinia` |
 | `useRouter` (for navigation) | `vue-router` |
-| Stores (`useAuthStore`…) | `~/stores/<name>` |
-| Composables (`useSound`…) | `~/composables/<name>` |
+| `useAuthStore` and other stores | `~/application/auth/useAuthStore` |
+| Use case composables | `~/application/<context>/use<Name>` |
+| API modules | `~/infrastructure/api/<context>` |
+| `useSound` and framework utilities | `~/composables/<name>` |
+
+**File naming rules for types:**
+- `app/domain/<context>/<TypeName>.ts` — one file per domain concept, named after the exported type (PascalCase). Never use suffixes like `Types` or prefix like `I`. Example: `HatchOutcome.ts`, `AuthUser.ts`, `PlayResult.ts`.
+- Types that are pure UI state (e.g. `GameState = "idle" | "playing" | …`) stay co-located in their composable — they are not domain concepts.
+- API response types (e.g. `EggStatus`) stay in `app/infrastructure/api/<context>.ts` — they describe the server contract, not the domain.
 
 Vue compiler macros (`defineProps`, `defineEmits`, `withDefaults`, `defineExpose`, `definePageMeta`) and `$fetch` are globals — no import needed.
 
