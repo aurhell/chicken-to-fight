@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import { resolveAuthRedirect } from "./resolveAuthRedirect"
 
-import type { AuthUser } from "../types/auth"
+import type { AuthUser } from "../domain/auth/AuthUser"
 
 const STARTING_GOLD = 120
 

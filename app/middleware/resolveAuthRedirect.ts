@@ -1,4 +1,4 @@
-import type { AuthUser } from "../types/auth"
+import type { AuthUser } from "../domain/auth/AuthUser"
 
 const PUBLIC_ROUTE_NAMES = [
   "login",
