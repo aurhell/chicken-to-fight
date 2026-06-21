@@ -38,8 +38,9 @@ describe("SellChickenUseCase", () => {
     }, ADOPTION_TIME)
 
     const stored = await chickens.findById(egg.id)
+    if (!stored) throw new Error("Test setup: egg not found")
     await chickens.save(
-      stored!
+      stored
         .care("humidity", CARE_REFRESH_TIME)
         .care("temperature", CARE_REFRESH_TIME)
         .care("turn", CARE_REFRESH_TIME),
@@ -57,7 +58,8 @@ describe("SellChickenUseCase", () => {
     it("deletes the chick and returns the updated gold", async() => {
       // Given
       const userBefore = await users.findById(userId)
-      const goldBefore = userBefore!.gold
+      if (!userBefore) throw new Error("Test setup: user not found")
+      const goldBefore = userBefore.gold
 
       // When
       const result = await useCase.execute({

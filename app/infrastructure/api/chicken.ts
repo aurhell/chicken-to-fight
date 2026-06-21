@@ -24,6 +24,22 @@ export type HatchResult = {
 export type ChickStatus = {
   id: number
   name: string
+  level: number
+  bornAt: string | null
+  fedAt: string | null
+  wateredAt: string | null
+}
+
+export type Resources = {
+  water: number
+  flour: number
+}
+
+export type StatusResponse = {
+  egg: EggStatus | null
+  chick: ChickStatus | null
+  chickenDied: boolean
+  resources: Resources
 }
 
 export type AdoptResult = {
@@ -35,12 +51,21 @@ export type SellResult = {
   gold: number
 }
 
+export type FeedResult = {
+  fedAt: string
+  flour: number
+}
+
+export type WaterResult = {
+  wateredAt: string
+  water: number
+}
+
 export function useChickenApi() {
   const api = useApiClient()
 
   return {
-    fetchStatus: () =>
-      api.get<{ egg: EggStatus | null; chick: ChickStatus | null }>("/api/chicken/status"),
+    fetchStatus: () => api.get<StatusResponse>("/api/chicken/status"),
     adopt: (name: string) =>
       api.post<AdoptResult>("/api/chicken/adopt", { name }),
     care: (id: number, action: CareAction) =>
@@ -49,5 +74,9 @@ export function useChickenApi() {
       api.post<HatchResult>(`/api/chicken/${id}/hatch`, {}),
     sell: (id: number) =>
       api.post<SellResult>(`/api/chicken/${id}/sell`, {}),
+    feed: (id: number) =>
+      api.post<FeedResult>(`/api/chicken/${id}/feed`, {}),
+    water: (id: number) =>
+      api.post<WaterResult>(`/api/chicken/${id}/water`, {}),
   }
 }

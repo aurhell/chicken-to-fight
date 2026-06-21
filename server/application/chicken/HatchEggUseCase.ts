@@ -32,7 +32,8 @@ export class HatchEggUseCase {
 
     const hatched = new Chicken(
       chicken.id, chicken.userId, chicken.name, CHICKEN_LEVELS.CHICK,
-      chicken.xp, chicken.stats, null,
+      chicken.xp, chicken.stats, now,
+      now, now,
       chicken.humidityAdjustedAt, chicken.temperatureAdjustedAt, chicken.turnedAt,
     )
     return {

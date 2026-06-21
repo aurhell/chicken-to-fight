@@ -58,5 +58,17 @@
   "The care conditions were not met. {name} did not survive.": "Les conditions de soin n'ont pas été respectées. {name} n'a pas survécu.",
   "Back to the farm": "Retour à l'élevage",
   "Sell for {n} PO": "Vendre {n} PO",
-  "Selling…": "Vente en cours…"
+  "Selling…": "Vente en cours…",
+  "XP": "XP",
+  "Level 3 in {n} day(s)": "Niveau 3 dans {n} jour(s)",
+  "Hunger": "Faim",
+  "Thirst": "Soif",
+  "Feed (1🌾)": "Nourrir (1🌾)",
+  "Feeding…": "Repas…",
+  "Water (1💧)": "Abreuver (1💧)",
+  "Watering…": "Abreuvage…",
+  "Your chick has died": "Ton poussin est mort",
+  "You forgot to feed or water your chick… it didn't make it.": "Tu as oublié de nourrir ou d'abreuver ton poussin… il n'a pas survécu.",
+  "Adopt a new egg": "Adopter un nouvel œuf",
+  "Your chicken is growing up!": "Ton poulet grandit !"
 }

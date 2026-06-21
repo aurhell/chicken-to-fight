@@ -71,9 +71,9 @@ export function generateGrid(): Grid {
       cells[i],
       cells[j],
     ] = [
-      cells[j]!,
-      cells[i]!,
-    ]
+      cells[j],
+      cells[i],
+    ] as [CellContent, CellContent]
   }
   return cells
 }

@@ -44,8 +44,9 @@ describe("HatchEggUseCase", () => {
     it("promotes the egg to CHICK and returns hatched", async() => {
       // Given — refresh all care 1h before hatch so they're within the 12h window
       const egg = await chickens.findById(eggId)
+      if (!egg) throw new Error("Test setup: egg not found")
       await chickens.save(
-        egg!
+        egg
           .care("humidity", CARE_REFRESH_TIME)
           .care("temperature", CARE_REFRESH_TIME)
           .care("turn", CARE_REFRESH_TIME),
@@ -61,7 +62,7 @@ describe("HatchEggUseCase", () => {
       expect(result.result).toBe("hatched")
       if (result.result === "hatched") {
         expect(result.chicken.level).toBe(CHICKEN_LEVELS.CHICK)
-        expect(result.chicken.hatchAt).toBeNull()
+        expect(result.chicken.hatchAt).toEqual(HATCH_TIME)
       }
     })
   })

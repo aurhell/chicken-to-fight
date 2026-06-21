@@ -19,6 +19,7 @@ export class InMemoryChickenRepository implements IChickenRepository {
     const chicken = new Chicken(
       id, data.userId, data.name, data.level,
       data.xp, data.stats, data.hatchAt,
+      data.fedAt, data.wateredAt,
       data.humidityAdjustedAt, data.temperatureAdjustedAt, data.turnedAt,
     )
     this.store.set(id, chicken)

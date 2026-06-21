@@ -73,9 +73,13 @@ describe("PlayScratchCardUseCase", () => {
 
       it("then adds 50 PO to the user's gold", async() => {
         vi.spyOn(ScratchCardModule, "generateGrid").mockReturnValueOnce(WINNING_GRID)
-        const goldBefore = (await users.findById(userId))!.gold
+        const before = await users.findById(userId)
+        if (!before) throw new Error("Test setup: user not found")
+        const goldBefore = before.gold
         await useCase.execute(userId)
-        const goldAfter = (await users.findById(userId))!.gold
+        const after = await users.findById(userId)
+        if (!after) throw new Error("User not found after play")
+        const goldAfter = after.gold
         expect(goldAfter - goldBefore).toBe(50)
       })
     })

@@ -41,7 +41,8 @@ export class InMemoryUserRepository implements IUserRepository {
   async addGold(userId: number, amount: number): Promise<User> {
     const entry = this.store.get(userId)
     if (!entry) throw new Error("User not found")
-    const updated = new User(entry.user.id, entry.user.username, entry.user.email, entry.user.gold + amount, entry.user.createdAt)
+    const u = entry.user
+    const updated = new User(u.id, u.username, u.email, u.gold + amount, u.createdAt)
     this.store.set(userId, {
       ...entry,
       user: updated, 

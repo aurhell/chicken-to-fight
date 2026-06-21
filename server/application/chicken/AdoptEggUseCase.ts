@@ -42,6 +42,8 @@ export class AdoptEggUseCase {
       xp: new XPLevel(0),
       stats: DEFAULT_STATS,
       hatchAt,
+      fedAt: null,
+      wateredAt: null,
       humidityAdjustedAt: now,
       temperatureAdjustedAt: now,
       turnedAt: now,

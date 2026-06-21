@@ -37,7 +37,8 @@ describe("AdoptEggUseCase", () => {
 
       // Then
       const updatedUser = await users.findById(user.id)
-      expect(updatedUser!.gold).toBe(user.gold - EGG_ADOPTION_COST)
+      if (!updatedUser) throw new Error("User not found after adoption")
+      expect(updatedUser.gold).toBe(user.gold - EGG_ADOPTION_COST)
       expect(result.chicken.level).toBe(CHICKEN_LEVELS.EGG)
       expect(result.chicken.hatchAt).toEqual(new Date(FIXED_NOW.getTime() + INCUBATION_DURATION_H * MS_PER_HOUR))
     })

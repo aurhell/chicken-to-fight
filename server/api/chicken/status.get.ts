@@ -1,16 +1,38 @@
 import { CHICKEN_LEVELS } from "../../domain/chicken/entities/Chicken"
+import { INVENTORY_ITEM } from "../../domain/economy/entities/InventoryItem"
 import { requireAuth } from "../../infrastructure/auth/session"
 import { DrizzleChickenRepository } from "../../infrastructure/db/repositories/DrizzleChickenRepository"
+import { DrizzleInventoryRepository } from "../../infrastructure/db/repositories/DrizzleInventoryRepository"
 
 export default defineEventHandler(async(event) => {
   const userId = await requireAuth(event)
-  const repo = new DrizzleChickenRepository()
+  const chickenRepo = new DrizzleChickenRepository()
+  const inventoryRepo = new DrizzleInventoryRepository()
 
-  const chickens = await repo.findByUserId(userId)
+  const [
+    allChickens,
+    inv,
+  ] = await Promise.all([
+    chickenRepo.findByUserId(userId),
+    inventoryRepo.getAll(userId),
+  ])
   const now = new Date()
 
-  const egg = chickens.find(c => c.isEgg(now)) ?? null
-  const chick = chickens.find(c => c.level === CHICKEN_LEVELS.CHICK) ?? null
+  const egg = allChickens.find(c => c.isEgg(now)) ?? null
+
+  let living = allChickens.find(c =>
+    c.level === CHICKEN_LEVELS.CHICK || c.level === CHICKEN_LEVELS.ADOLESCENT,
+  ) ?? null
+
+  let chickenDied = false
+
+  if (living?.isDead(now)) {
+    await chickenRepo.delete(living.id)
+    living = null
+    chickenDied = true
+  } else if (living?.isReadyToGrow(now)) {
+    living = await chickenRepo.save(living.grow())
+  }
 
   return {
     egg: egg
@@ -23,11 +45,20 @@ export default defineEventHandler(async(event) => {
         turnedOk: egg.isTurnedOk(now),
       }
       : null,
-    chick: chick
+    chick: living
       ? {
-        id: chick.id,
-        name: chick.name, 
+        id: living.id,
+        name: living.name,
+        level: living.level,
+        bornAt: living.hatchAt,
+        fedAt: living.fedAt,
+        wateredAt: living.wateredAt,
       }
       : null,
+    chickenDied,
+    resources: {
+      water: inv[INVENTORY_ITEM.WATER] ?? 0,
+      flour: inv[INVENTORY_ITEM.FLOUR] ?? 0,
+    },
   }
 })

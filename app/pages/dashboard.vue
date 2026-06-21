@@ -8,13 +8,18 @@ import DebugIncubator from "~/presentation/components/chicken/DebugIncubator.vue
 import EggAdoptForm from "~/presentation/components/chicken/EggAdoptForm.vue"
 import EggIncubator from "~/presentation/components/chicken/EggIncubator.vue"
 import EggOutcomeScreen from "~/presentation/components/chicken/EggOutcomeScreen.vue"
+import PixelButton from "~/presentation/components/ui/PixelButton.vue"
+import PixelCard from "~/presentation/components/ui/PixelCard.vue"
 
 definePageMeta({ layout: "game" })
 
 const { t } = useI18n()
 const isDev = import.meta.dev
 
-const { egg, chick, loading, outcome, fetchStatus, onAdopted, onOutcome, dismissOutcome, onSold } = useIncubation()
+const {
+  egg, chick, resources, loading, outcome, chickenDied,
+  fetchStatus, onAdopted, onOutcome, dismissOutcome, dismissDeath, onSold, onFed, onWatered,
+} = useIncubation()
 
 onMounted(fetchStatus)
 </script>
@@ -39,6 +44,26 @@ onMounted(fetchStatus)
       @dismiss="dismissOutcome"
     />
 
+    <!-- Écran de mort du poussin -->
+    <PixelCard
+      v-else-if="chickenDied"
+      :title="t('Your chick has died')"
+    >
+      <div class="flex flex-col items-center gap-6 py-4 text-center">
+        <span class="text-7xl leading-none">💀</span>
+        <p class="font-ui text-base text-pixel-black">
+          {{ t("You forgot to feed or water your chick… it didn't make it.") }}
+        </p>
+        <PixelButton
+          class="w-full"
+          variant="primary"
+          @click="dismissDeath"
+        >
+          {{ t("Adopt a new egg") }}
+        </PixelButton>
+      </div>
+    </PixelCard>
+
     <EggIncubator
       v-else-if="egg"
       :key="egg.hatchAt"
@@ -49,7 +74,10 @@ onMounted(fetchStatus)
     <ChickenCard
       v-else-if="chick"
       :chick="chick"
+      :resources="resources"
       @sold="onSold"
+      @fed="onFed"
+      @watered="onWatered"
     />
 
     <EggAdoptForm
@@ -60,6 +88,7 @@ onMounted(fetchStatus)
     <DebugIncubator
       v-if="isDev"
       :egg-id="egg?.id"
+      :chick-id="chick?.id"
       @refresh="fetchStatus"
     />
   </div>

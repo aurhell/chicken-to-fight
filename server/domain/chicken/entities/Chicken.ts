@@ -2,11 +2,15 @@ import { ChickenStats } from "../value-objects/ChickenStats"
 import { XPLevel } from "../value-objects/XPLevel"
 
 const MS_PER_HOUR = 3_600_000
+const MS_PER_DAY = 24 * MS_PER_HOUR
 
 export const INCUBATION_DURATION_H = 48
 export const CARE_DRIFT_H = 12
 export const EGG_ADOPTION_COST = 30
 export const CHICKEN_SELL_PRICE = 69
+export const CHICK_GROWTH_DAYS = 3
+export const HUNGER_DRAIN_H = 12
+export const THIRST_DRAIN_H = 12
 
 export const CHICKEN_LEVELS = {
   EGG: 1,
@@ -32,10 +36,14 @@ export class Chicken {
     public readonly xp: XPLevel,
     public readonly stats: ChickenStats,
     public readonly hatchAt: Date | null,
+    public readonly fedAt: Date | null,
+    public readonly wateredAt: Date | null,
     public readonly humidityAdjustedAt: Date,
     public readonly temperatureAdjustedAt: Date,
     public readonly turnedAt: Date,
   ) {}
+
+  // --- Egg care ---
 
   isEgg(now = new Date()): boolean {
     return this.level === CHICKEN_LEVELS.EGG && this.hatchAt !== null && this.hatchAt > now
@@ -60,16 +68,72 @@ export class Chicken {
   care(action: CareAction, now = new Date()): Chicken {
     return new Chicken(
       this.id, this.userId, this.name, this.level, this.xp, this.stats, this.hatchAt,
+      this.fedAt, this.wateredAt,
       action === "humidity" ? now : this.humidityAdjustedAt,
       action === "temperature" ? now : this.temperatureAdjustedAt,
       action === "turn" ? now : this.turnedAt,
     )
   }
 
+  // --- Chick care ---
+
+  hungerPct(now = new Date()): number {
+    if (!this.fedAt) return 0
+    const elapsed = now.getTime() - this.fedAt.getTime()
+    return Math.max(0, Math.min(1, 1 - elapsed / (HUNGER_DRAIN_H * MS_PER_HOUR)))
+  }
+
+  thirstPct(now = new Date()): number {
+    if (!this.wateredAt) return 0
+    const elapsed = now.getTime() - this.wateredAt.getTime()
+    return Math.max(0, Math.min(1, 1 - elapsed / (THIRST_DRAIN_H * MS_PER_HOUR)))
+  }
+
+  isDead(now = new Date()): boolean {
+    return this.level === CHICKEN_LEVELS.CHICK
+      && (this.hungerPct(now) <= 0 || this.thirstPct(now) <= 0)
+  }
+
+  feed(now = new Date()): Chicken {
+    return new Chicken(
+      this.id, this.userId, this.name, this.level, this.xp, this.stats, this.hatchAt,
+      now, this.wateredAt,
+      this.humidityAdjustedAt, this.temperatureAdjustedAt, this.turnedAt,
+    )
+  }
+
+  water(now = new Date()): Chicken {
+    return new Chicken(
+      this.id, this.userId, this.name, this.level, this.xp, this.stats, this.hatchAt,
+      this.fedAt, now,
+      this.humidityAdjustedAt, this.temperatureAdjustedAt, this.turnedAt,
+    )
+  }
+
+  // --- Growth ---
+
+  isReadyToGrow(now = new Date()): boolean {
+    return this.level === CHICKEN_LEVELS.CHICK
+      && this.hatchAt !== null
+      && now.getTime() >= this.hatchAt.getTime() + CHICK_GROWTH_DAYS * MS_PER_DAY
+  }
+
+  grow(): Chicken {
+    return new Chicken(
+      this.id, this.userId, this.name, CHICKEN_LEVELS.ADOLESCENT,
+      this.xp, this.stats, this.hatchAt,
+      this.fedAt, this.wateredAt,
+      this.humidityAdjustedAt, this.temperatureAdjustedAt, this.turnedAt,
+    )
+  }
+
+  // --- Combat (future use) ---
+
   gainXP(amount: number): Chicken {
     return new Chicken(
       this.id, this.userId, this.name, this.level,
       this.xp.add(amount), this.stats, this.hatchAt,
+      this.fedAt, this.wateredAt,
       this.humidityAdjustedAt, this.temperatureAdjustedAt, this.turnedAt,
     )
   }
@@ -80,6 +144,7 @@ export function createEgg(userId: number, name: string, now = new Date()): Omit<
   return new Chicken(
     0, userId, name, CHICKEN_LEVELS.EGG,
     new XPLevel(0), new ChickenStats(100, 100, 100, 0),
-    hatchAt, now, now, now,
+    hatchAt, null, null,
+    now, now, now,
   ) as Chicken & { id: 0 }
 }

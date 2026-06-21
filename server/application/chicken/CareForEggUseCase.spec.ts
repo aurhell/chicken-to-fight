@@ -101,10 +101,12 @@ describe("CareForEggUseCase", () => {
     it("throws 'Not an egg'", async() => {
       // Given — hatch the egg by setting hatchAt in the past
       const egg = await chickens.findById(eggId)
+      if (!egg) throw new Error("Test setup: egg not found")
       const hatched = new (await import("../../domain/chicken/entities/Chicken")).Chicken(
-        egg!.id, egg!.userId, egg!.name, egg!.level, egg!.xp, egg!.stats,
+        egg.id, egg.userId, egg.name, egg.level, egg.xp, egg.stats,
         new Date("2020-01-01"),
-        egg!.humidityAdjustedAt, egg!.temperatureAdjustedAt, egg!.turnedAt,
+        egg.fedAt, egg.wateredAt,
+        egg.humidityAdjustedAt, egg.temperatureAdjustedAt, egg.turnedAt,
       )
       await chickens.save(hatched)
 

@@ -9,6 +9,8 @@ export type CreateChickenData = {
   xp: XPLevel
   stats: ChickenStats
   hatchAt: Date | null
+  fedAt: Date | null
+  wateredAt: Date | null
   humidityAdjustedAt: Date
   temperatureAdjustedAt: Date
   turnedAt: Date

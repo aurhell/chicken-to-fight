@@ -19,6 +19,7 @@ function makeEgg(overrides: Partial<{
     1, 1, "Poussin", CHICKEN_LEVELS.EGG,
     new XPLevel(0), new ChickenStats(100, 100, 100, 0),
     overrides.hatchAt ?? new Date(FIXED_NOW.getTime() + INCUBATION_DURATION_H * MS_PER_HOUR),
+    null, null,
     overrides.humidityAdjustedAt ?? FIXED_NOW,
     overrides.temperatureAdjustedAt ?? FIXED_NOW,
     overrides.turnedAt ?? FIXED_NOW,
@@ -46,7 +47,7 @@ describe("Chicken.isEgg()", () => {
       const chicken = new Chicken(
         1, 1, "Bob", CHICKEN_LEVELS.CHICK,
         new XPLevel(0), new ChickenStats(100, 100, 100, 0),
-        null, now, now, now,
+        null, null, null, now, now, now,
       )
       expect(chicken.isEgg()).toBe(false)
     })

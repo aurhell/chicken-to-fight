@@ -32,11 +32,14 @@ export class DrizzleChickenRepository implements IChickenRepository {
       happiness: data.stats.happiness,
       fatigue: data.stats.fatigue,
       hatchAt: data.hatchAt,
+      fedAt: data.fedAt,
+      wateredAt: data.wateredAt,
       humidityAdjustedAt: data.humidityAdjustedAt,
       temperatureAdjustedAt: data.temperatureAdjustedAt,
       turnedAt: data.turnedAt,
     }).returning()
-    return this.toEntity(row!)
+    if (!row) throw new Error("Failed to create chicken")
+    return this.toEntity(row)
   }
 
   async save(chicken: Chicken): Promise<Chicken> {
@@ -49,11 +52,14 @@ export class DrizzleChickenRepository implements IChickenRepository {
       happiness: chicken.stats.happiness,
       fatigue: chicken.stats.fatigue,
       hatchAt: chicken.hatchAt,
+      fedAt: chicken.fedAt,
+      wateredAt: chicken.wateredAt,
       humidityAdjustedAt: chicken.humidityAdjustedAt,
       temperatureAdjustedAt: chicken.temperatureAdjustedAt,
       turnedAt: chicken.turnedAt,
     }).where(eq(chickens.id, chicken.id)).returning()
-    return this.toEntity(row!)
+    if (!row) throw new Error("Failed to save chicken")
+    return this.toEntity(row)
   }
 
   async delete(id: number): Promise<void> {
@@ -69,6 +75,8 @@ export class DrizzleChickenRepository implements IChickenRepository {
       new XPLevel(row.xp),
       new ChickenStats(row.hunger, row.thirst, row.happiness, row.fatigue),
       row.hatchAt,
+      row.fedAt,
+      row.wateredAt,
       row.humidityAdjustedAt,
       row.temperatureAdjustedAt,
       row.turnedAt,
