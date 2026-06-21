@@ -28,6 +28,16 @@ const navItems = [
     icon: "🎰",
     to: "/minigames/grat-chicken",
   },
+  {
+    label: "Inventory",
+    icon: "🎒",
+    to: "/inventory",
+  },
+  {
+    label: "Shop",
+    icon: "🛒",
+    to: "/shop",
+  },
 ]
 
 function isActive(to: string): boolean {

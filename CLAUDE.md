@@ -171,6 +171,19 @@ const WINNING_LINES = [[0, 1, 2], [3, 4, 5], ...] as const
 
 ---
 
+## Navigation — deux endroits à mettre à jour
+
+La navigation existe en **deux exemplaires** :
+
+| Fichier | Visible sur |
+|---------|-------------|
+| `app/presentation/components/game/BottomNav.vue` | Mobile uniquement (`md:hidden`) |
+| `app/presentation/components/game/GameHeader.vue` | Desktop uniquement (`hidden md:flex`) |
+
+**Toute nouvelle page doit être ajoutée dans les deux fichiers.** Ne pas oublier l'un des deux est la règle la plus couramment oubliée.
+
+---
+
 ## Pre-commit
 
 Run `/pre-commit` before every commit. It checks lint, typecheck, audit, security scan, DDD layers, then groups changes into atomic commits with gitmoji messages.

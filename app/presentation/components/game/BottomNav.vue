@@ -21,9 +21,14 @@ const items = computed(() => [
     to: "/minigames/grat-chicken",
   },
   {
-    icon: "🏆",
-    label: t("Ranking"),
-    to: null,
+    icon: "🎒",
+    label: t("Inventory"),
+    to: "/inventory",
+  },
+  {
+    icon: "🛒",
+    label: t("Shop"),
+    to: "/shop",
   },
   {
     icon: "⚙️",
