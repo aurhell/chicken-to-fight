@@ -122,6 +122,7 @@ const config = defineConfigWithVueTs(
           ignores: [
             "dashboard",
             "game",
+            "index",
             "login",
             "register",
           ],

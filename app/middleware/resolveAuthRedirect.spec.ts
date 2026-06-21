@@ -37,9 +37,23 @@ describe("resolveAuthRedirect", () => {
       })
     })
 
+    describe("when visiting the index route", () => {
+      it("then should redirect to /dashboard", () => {
+        expect(resolveAuthRedirect(alice, "index")).toBe("/dashboard")
+      })
+    })
+
     describe("when visiting a protected route", () => {
       it("then should not redirect", () => {
         expect(resolveAuthRedirect(alice, "dashboard")).toBeNull()
+      })
+    })
+  })
+
+  describe("given an unauthenticated user", () => {
+    describe("when visiting the index route", () => {
+      it("then should redirect to /login", () => {
+        expect(resolveAuthRedirect(null, "index")).toBe("/login")
       })
     })
   })
