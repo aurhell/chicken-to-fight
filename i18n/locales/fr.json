@@ -51,5 +51,12 @@
   "Temperature": "Température",
   "Turning": "Retournement",
   "Off": "Déréglé",
-  "Fix": "Régler"
+  "Fix": "Régler",
+  "It hatched!": "Il a éclos !",
+  "The egg is lost…": "L'œuf est perdu…",
+  "Welcome, {name}!": "Bienvenue, {name} !",
+  "The care conditions were not met. {name} did not survive.": "Les conditions de soin n'ont pas été respectées. {name} n'a pas survécu.",
+  "Back to the farm": "Retour à l'élevage",
+  "Sell for {n} PO": "Vendre {n} PO",
+  "Selling…": "Vente en cours…"
 }

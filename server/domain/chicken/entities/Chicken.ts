@@ -6,6 +6,7 @@ const MS_PER_HOUR = 3_600_000
 export const INCUBATION_DURATION_H = 48
 export const CARE_DRIFT_H = 12
 export const EGG_ADOPTION_COST = 30
+export const CHICKEN_SELL_PRICE = 69
 
 export const CHICKEN_LEVELS = {
   EGG: 1,
