@@ -1,30 +1,16 @@
+import { CARE_DRIFT_H, CHICK_GROWTH_DAYS, HUNGER_DRAIN_H, INCUBATION_DURATION_H, THIRST_DRAIN_H } from "#shared/chicken/ChickenConstants"
+import { CHICKEN_LEVELS, type ChickenLevel } from "#shared/chicken/ChickenLevel"
+
 import { ChickenStats } from "../value-objects/ChickenStats"
 import { XPLevel } from "../value-objects/XPLevel"
+
+export { CHICKEN_LEVELS, type ChickenLevel } from "#shared/chicken/ChickenLevel"
+export { INCUBATION_DURATION_H, CARE_DRIFT_H, EGG_ADOPTION_COST, CHICKEN_SELL_PRICE, CHICK_GROWTH_DAYS, HUNGER_DRAIN_H, THIRST_DRAIN_H } from "#shared/chicken/ChickenConstants"
+export { CHICKEN_SELL_PRICES } from "#shared/chicken/SellPrice"
 
 const MS_PER_HOUR = 3_600_000
 const MS_PER_DAY = 24 * MS_PER_HOUR
 
-export const INCUBATION_DURATION_H = 48
-export const CARE_DRIFT_H = 12
-export const EGG_ADOPTION_COST = 30
-export const CHICKEN_SELL_PRICE = 69
-export const CHICK_GROWTH_DAYS = 3
-export const HUNGER_DRAIN_H = 12
-export const THIRST_DRAIN_H = 12
-
-export const CHICKEN_LEVELS = {
-  EGG: 1,
-  CHICK: 2,
-  ADOLESCENT: 3,
-  APPRENTICE: 4,
-  CHAMPION: 5,
-  MASTER: 6,
-  LEGEND: 7,
-  RETIRED: 8,
-  IMMORTAL: 9,
-} as const
-
-export type ChickenLevel = typeof CHICKEN_LEVELS[keyof typeof CHICKEN_LEVELS]
 export type CareAction = "humidity" | "temperature" | "turn"
 
 export class Chicken {

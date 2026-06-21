@@ -2,17 +2,23 @@
 import { computed, onMounted, onUnmounted, ref } from "vue"
 import { useI18n } from "vue-i18n"
 
-import { useChickenApi, type EggStatus  } from "~/infrastructure/api/chicken"
+import { CHICKEN_LEVELS } from "#shared/chicken/ChickenLevel"
+import { CHICKEN_SELL_PRICES } from "#shared/chicken/SellPrice"
+import { useChickenApi, type EggStatus } from "~/infrastructure/api/chicken"
 import PixelButton from "~/presentation/components/ui/PixelButton.vue"
 import PixelCard from "~/presentation/components/ui/PixelCard.vue"
 
 import type { HatchOutcome } from "~/domain/chicken/HatchOutcome"
 
 const props = defineProps<{ egg: EggStatus }>()
-const emit = defineEmits<{ outcome: [HatchOutcome] }>()
+const emit = defineEmits<{
+  outcome: [HatchOutcome]
+  sold: []
+}>()
 
 const { t } = useI18n()
 const api = useChickenApi()
+const selling = ref(false)
 
 const humidityOk = ref(props.egg.humidityOk)
 const temperatureOk = ref(props.egg.temperatureOk)
@@ -52,6 +58,16 @@ onMounted(() => {
 })
 
 onUnmounted(() => clearInterval(ticker))
+
+async function sell() {
+  selling.value = true
+  try {
+    await api.sell(props.egg.id)
+    emit("sold")
+  } finally {
+    selling.value = false
+  }
+}
 
 async function care(action: "humidity" | "temperature" | "turn") {
   loadingAction.value = action
@@ -143,5 +159,14 @@ async function care(action: "humidity" | "temperature" | "turn") {
         </PixelButton>
       </div>
     </div>
+
+    <PixelButton
+      class="mt-4 w-full"
+      variant="danger"
+      :disabled="selling || hatching"
+      @click="sell"
+    >
+      {{ selling ? t("Selling…") : t("Sell for {n} PO", { n: CHICKEN_SELL_PRICES[CHICKEN_LEVELS.EGG] }) }}
+    </PixelButton>
   </PixelCard>
 </template>

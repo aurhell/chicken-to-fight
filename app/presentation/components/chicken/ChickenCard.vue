@@ -2,14 +2,14 @@
 import { computed, onBeforeUnmount, onMounted, ref } from "vue"
 import { useI18n } from "vue-i18n"
 
-import { careBarPct, HUNGER_DRAIN_H, THIRST_DRAIN_H } from "~/domain/chicken/ChickCare"
-import { CHICKEN_LEVELS } from "~/domain/chicken/ChickenLevel"
+import { CHICK_GROWTH_DAYS, HUNGER_DRAIN_H, THIRST_DRAIN_H } from "#shared/chicken/ChickenConstants"
+import { CHICKEN_LEVELS } from "#shared/chicken/ChickenLevel"
+import { CHICKEN_SELL_PRICES } from "#shared/chicken/SellPrice"
+import { careBarPct } from "~/domain/chicken/ChickCare"
 import { useChickenApi, type ChickStatus, type Resources } from "~/infrastructure/api/chicken"
 import PixelButton from "~/presentation/components/ui/PixelButton.vue"
 import PixelCard from "~/presentation/components/ui/PixelCard.vue"
 
-const CHICKEN_SELL_PRICE = 69
-const CHICK_GROWTH_DAYS = 3
 const MS_PER_DAY = 86_400_000
 const BAR_UPDATE_INTERVAL_MS = 5_000
 
@@ -19,8 +19,8 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{
   sold: []
-  fed: [fedAt: string, flour: number]
-  watered: [wateredAt: string, water: number]
+  fed: [chickenId: number, fedAt: string, flour: number]
+  watered: [chickenId: number, wateredAt: string, water: number]
 }>()
 
 const { t } = useI18n()
@@ -63,7 +63,7 @@ async function feed() {
   feeding.value = true
   try {
     const result = await api.feed(props.chick.id)
-    emit("fed", result.fedAt, result.flour)
+    emit("fed", props.chick.id, result.fedAt, result.flour)
   } finally {
     feeding.value = false
   }
@@ -73,7 +73,7 @@ async function giveWater() {
   watering.value = true
   try {
     const result = await api.water(props.chick.id)
-    emit("watered", result.wateredAt, result.water)
+    emit("watered", props.chick.id, result.wateredAt, result.water)
   } finally {
     watering.value = false
   }
@@ -198,7 +198,7 @@ async function sell() {
         :disabled="selling"
         @click="sell"
       >
-        {{ selling ? t("Selling…") : t("Sell for {n} PO", { n: CHICKEN_SELL_PRICE }) }}
+        {{ selling ? t("Selling…") : t("Sell for {n} PO", { n: CHICKEN_SELL_PRICES[chick.level] ?? 0 }) }}
       </PixelButton>
     </div>
   </PixelCard>
