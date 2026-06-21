@@ -173,4 +173,4 @@ const WINNING_LINES = [[0, 1, 2], [3, 4, 5], ...] as const
 
 ## Pre-commit
 
-Run `/pre-commit` before every commit. It checks lint, audit, security scan, DDD layers, then groups changes into atomic commits with gitmoji messages.
+Run `/pre-commit` before every commit. It checks lint, typecheck, audit, security scan, DDD layers, then groups changes into atomic commits with gitmoji messages.

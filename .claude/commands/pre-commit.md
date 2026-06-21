@@ -4,13 +4,15 @@ Run all pre-commit checks, group changes into atomic commits, and propose a mess
 
 ---
 
-## Step 1 — Lint
+## Step 1 — Lint + Typecheck
 
 ```bash
 pnpm lint
+pnpm typecheck
 ```
 
-- **Pass**: 0 errors (warnings are acceptable)
+- **Lint pass**: 0 errors (warnings are acceptable)
+- **Typecheck pass**: 0 TypeScript errors
 - **Fail**: fix before proceeding
 
 ---
