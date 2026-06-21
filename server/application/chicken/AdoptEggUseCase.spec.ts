@@ -84,24 +84,26 @@ describe("AdoptEggUseCase", () => {
   })
 
   describe("Given a user who already has an egg incubating", () => {
-    it("throws 'Already incubating an egg'", async() => {
+    it("allows adopting a second egg", async() => {
       // Given
       const user = await users.create({
         username: "Coach",
         email: "a@a.com",
-        passwordHash: "x", 
+        passwordHash: "x",
       })
       await useCase.execute({
         userId: user.id,
         name: "Premier oeuf", 
       }, FIXED_NOW)
 
-      // When / Then
-      await expect(useCase.execute({
+      // When
+      const result = await useCase.execute({
         userId: user.id,
         name: "Deuxième oeuf", 
-      }, FIXED_NOW))
-        .rejects.toThrow("Already incubating an egg")
+      }, FIXED_NOW)
+
+      // Then
+      expect(result.chicken.level).toBe(CHICKEN_LEVELS.EGG)
     })
   })
 })

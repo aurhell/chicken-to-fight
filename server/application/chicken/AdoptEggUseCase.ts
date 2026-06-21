@@ -30,9 +30,6 @@ export class AdoptEggUseCase {
     if (!user) throw new Error("User not found")
     if (user.gold < EGG_ADOPTION_COST) throw new Error("Not enough gold")
 
-    const existing = await this.chickens.findByUserId(input.userId)
-    if (existing.some(c => c.isEgg(now))) throw new Error("Already incubating an egg")
-
     const hatchAt = new Date(now.getTime() + INCUBATION_DURATION_H * MS_PER_HOUR)
 
     const chicken = await this.chickens.create({

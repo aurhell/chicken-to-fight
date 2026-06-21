@@ -36,8 +36,8 @@ export type Resources = {
 }
 
 export type StatusResponse = {
-  egg: EggStatus | null
-  chick: ChickStatus | null
+  eggs: EggStatus[]
+  chicks: ChickStatus[]
   chickenDied: boolean
   resources: Resources
 }

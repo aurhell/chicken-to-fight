@@ -9,8 +9,8 @@ export function useIncubation() {
   const api = useChickenApi()
   const auth = useAuthStore()
 
-  const egg = ref<EggStatus | null>(null)
-  const chick = ref<ChickStatus | null>(null)
+  const eggs = ref<EggStatus[]>([])
+  const chicks = ref<ChickStatus[]>([])
   const resources = ref<Resources>({
     water: 0,
     flour: 0, 
@@ -23,8 +23,8 @@ export function useIncubation() {
     loading.value = true
     try {
       const data = await api.fetchStatus()
-      egg.value = data.egg
-      chick.value = data.chick
+      eggs.value = data.eggs
+      chicks.value = data.chicks
       resources.value = data.resources
       if (data.chickenDied) chickenDied.value = true
     } finally {
@@ -33,19 +33,21 @@ export function useIncubation() {
   }
 
   function onAdopted(newEgg: EggStatus) {
-    egg.value = newEgg
+    eggs.value = [
+      ...eggs.value,
+      newEgg,
+    ]
     auth.fetchMe()
   }
 
   function onOutcome(result: HatchOutcome) {
-    egg.value = null
     outcome.value = result
+    fetchStatus()
     auth.fetchMe()
   }
 
   function dismissOutcome() {
     outcome.value = null
-    fetchStatus()
   }
 
   function dismissDeath() {
@@ -53,14 +55,17 @@ export function useIncubation() {
   }
 
   async function onSold() {
-    chick.value = null
+    await fetchStatus()
     await auth.fetchMe()
   }
 
-  function onFed(fedAt: string, flour: number) {
-    if (chick.value) chick.value = {
-      ...chick.value,
-      fedAt, 
+  function onFed(chickenId: number, fedAt: string, flour: number) {
+    const idx = chicks.value.findIndex(c => c.id === chickenId)
+    if (idx !== -1) {
+      chicks.value = chicks.value.map((c, i) => i === idx ? {
+        ...c,
+        fedAt, 
+      } : c)
     }
     resources.value = {
       ...resources.value,
@@ -68,10 +73,13 @@ export function useIncubation() {
     }
   }
 
-  function onWatered(wateredAt: string, water: number) {
-    if (chick.value) chick.value = {
-      ...chick.value,
-      wateredAt, 
+  function onWatered(chickenId: number, wateredAt: string, water: number) {
+    const idx = chicks.value.findIndex(c => c.id === chickenId)
+    if (idx !== -1) {
+      chicks.value = chicks.value.map((c, i) => i === idx ? {
+        ...c,
+        wateredAt, 
+      } : c)
     }
     resources.value = {
       ...resources.value,
@@ -80,8 +88,8 @@ export function useIncubation() {
   }
 
   return {
-    egg,
-    chick,
+    eggs,
+    chicks,
     resources,
     loading,
     outcome,

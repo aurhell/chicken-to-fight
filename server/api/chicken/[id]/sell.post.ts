@@ -6,7 +6,6 @@ import { DrizzleUserRepository } from "../../../infrastructure/db/repositories/D
 const DOMAIN_ERRORS: Record<string, number> = {
   "Chicken not found": 404,
   "Not your chicken": 403,
-  "Not a chick": 422,
 }
 
 export default defineEventHandler(async(event) => {

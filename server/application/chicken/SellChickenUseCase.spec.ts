@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach } from "vitest"
 
-import { CHICKEN_LEVELS, CHICKEN_SELL_PRICE, INCUBATION_DURATION_H } from "../../domain/chicken/entities/Chicken"
+import { CHICKEN_LEVELS, CHICKEN_SELL_PRICE, CHICKEN_SELL_PRICES, INCUBATION_DURATION_H } from "../../domain/chicken/entities/Chicken"
 import { InMemoryChickenRepository } from "../../domain/chicken/repositories/InMemoryChickenRepository"
 import { InMemoryUserRepository } from "../../domain/user/repositories/InMemoryUserRepository"
 
@@ -93,8 +93,30 @@ describe("SellChickenUseCase", () => {
     })
   })
 
+  describe("Given an adolescent chicken", () => {
+    it("sells for the adolescent price", async() => {
+      // Given — grow the chick to adolescent
+      const stored = await chickens.findById(chickId)
+      if (!stored) throw new Error("Test setup: chick not found")
+      await chickens.save(stored.grow())
+      const userBefore = await users.findById(userId)
+      if (!userBefore) throw new Error("Test setup: user not found")
+
+      // When
+      const result = await useCase.execute({
+        userId,
+        chickenId: chickId, 
+      })
+
+      // Then
+      expect(result.gold).toBe(userBefore.gold + (CHICKEN_SELL_PRICES[CHICKEN_LEVELS.ADOLESCENT] ?? 0))
+      expect(await chickens.findById(chickId)).toBeNull()
+    })
+  })
+
   describe("Given an egg (not yet hatched)", () => {
-    it("throws 'Not a chick'", async() => {
+    it("sells for the egg price", async() => {
+      // Given
       const { chicken: egg } = await new AdoptEggUseCase(chickens, users).execute(
         {
           userId,
@@ -102,11 +124,18 @@ describe("SellChickenUseCase", () => {
         },
         HATCH_TIME,
       )
-      await expect(useCase.execute({
+      const userBefore = await users.findById(userId)
+      if (!userBefore) throw new Error("Test setup: user not found")
+
+      // When
+      const result = await useCase.execute({
         userId,
         chickenId: egg.id, 
-      }))
-        .rejects.toThrow("Not a chick")
+      })
+
+      // Then
+      expect(result.gold).toBe(userBefore.gold + (CHICKEN_SELL_PRICES[CHICKEN_LEVELS.EGG] ?? 0))
+      expect(await chickens.findById(egg.id)).toBeNull()
     })
   })
 })

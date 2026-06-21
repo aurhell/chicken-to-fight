@@ -18,43 +18,45 @@ export default defineEventHandler(async(event) => {
   ])
   const now = new Date()
 
-  const egg = allChickens.find(c => c.isEgg(now)) ?? null
+  const eggs = allChickens.filter(c => c.isEgg(now))
 
-  let living = allChickens.find(c =>
+  const living = allChickens.filter(c =>
     c.level === CHICKEN_LEVELS.CHICK || c.level === CHICKEN_LEVELS.ADOLESCENT,
-  ) ?? null
+  )
 
   let chickenDied = false
 
-  if (living?.isDead(now)) {
-    await chickenRepo.delete(living.id)
-    living = null
-    chickenDied = true
-  } else if (living?.isReadyToGrow(now)) {
-    living = await chickenRepo.save(living.grow())
-  }
+  const chicks = await Promise.all(living.map(async c => {
+    if (c.isDead(now)) {
+      await chickenRepo.delete(c.id)
+      chickenDied = true
+      return null
+    }
+    if (c.isReadyToGrow(now)) {
+      return await chickenRepo.save(c.grow())
+    }
+    return c
+  }))
+
+  const liveChicks = chicks.filter(c => c !== null)
 
   return {
-    egg: egg
-      ? {
-        id: egg.id,
-        name: egg.name,
-        hatchAt: egg.hatchAt,
-        humidityOk: egg.isHumidityOk(now),
-        temperatureOk: egg.isTemperatureOk(now),
-        turnedOk: egg.isTurnedOk(now),
-      }
-      : null,
-    chick: living
-      ? {
-        id: living.id,
-        name: living.name,
-        level: living.level,
-        bornAt: living.hatchAt,
-        fedAt: living.fedAt,
-        wateredAt: living.wateredAt,
-      }
-      : null,
+    eggs: eggs.map(e => ({
+      id: e.id,
+      name: e.name,
+      hatchAt: e.hatchAt,
+      humidityOk: e.isHumidityOk(now),
+      temperatureOk: e.isTemperatureOk(now),
+      turnedOk: e.isTurnedOk(now),
+    })),
+    chicks: liveChicks.map(c => ({
+      id: c.id,
+      name: c.name,
+      level: c.level,
+      bornAt: c.hatchAt,
+      fedAt: c.fedAt,
+      wateredAt: c.wateredAt,
+    })),
     chickenDied,
     resources: {
       water: inv[INVENTORY_ITEM.WATER] ?? 0,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from "vue"
+import { computed, onMounted } from "vue"
 import { useI18n } from "vue-i18n"
 
 import { useIncubation } from "~/application/chicken/useIncubation"
@@ -17,9 +17,12 @@ const { t } = useI18n()
 const isDev = import.meta.dev
 
 const {
-  egg, chick, resources, loading, outcome, chickenDied,
+  eggs, chicks, resources, loading, outcome, chickenDied,
   fetchStatus, onAdopted, onOutcome, dismissOutcome, dismissDeath, onSold, onFed, onWatered,
 } = useIncubation()
+
+const isEmpty = computed(() => eggs.value.length === 0 && chicks.value.length === 0)
+const showDeathScreen = computed(() => chickenDied.value && isEmpty.value)
 
 onMounted(fetchStatus)
 </script>
@@ -44,9 +47,9 @@ onMounted(fetchStatus)
       @dismiss="dismissOutcome"
     />
 
-    <!-- Écran de mort du poussin -->
+    <!-- Écran de mort (uniquement si plus aucun poulet ni oeuf) -->
     <PixelCard
-      v-else-if="chickenDied"
+      v-else-if="showDeathScreen"
       :title="t('Your chick has died')"
     >
       <div class="flex flex-col items-center gap-6 py-4 text-center">
@@ -64,31 +67,37 @@ onMounted(fetchStatus)
       </div>
     </PixelCard>
 
-    <EggIncubator
-      v-else-if="egg"
-      :key="egg.hatchAt"
-      :egg="egg"
-      @outcome="onOutcome"
-    />
+    <template v-else>
+      <div class="flex flex-col gap-6">
+        <!-- Oeufs en cours d'incubation -->
+        <EggIncubator
+          v-for="egg in eggs"
+          :key="egg.id"
+          :egg="egg"
+          @outcome="onOutcome"
+          @sold="onSold"
+        />
 
-    <ChickenCard
-      v-else-if="chick"
-      :chick="chick"
-      :resources="resources"
-      @sold="onSold"
-      @fed="onFed"
-      @watered="onWatered"
-    />
+        <!-- Poulets vivants -->
+        <ChickenCard
+          v-for="chick in chicks"
+          :key="chick.id"
+          :chick="chick"
+          :resources="resources"
+          @sold="onSold"
+          @fed="(id, fedAt, flour) => onFed(id, fedAt, flour)"
+          @watered="(id, wateredAt, water) => onWatered(id, wateredAt, water)"
+        />
 
-    <EggAdoptForm
-      v-else
-      @adopted="onAdopted"
-    />
+        <!-- Adopter un nouvel oeuf -->
+        <EggAdoptForm @adopted="onAdopted" />
+      </div>
+    </template>
 
     <DebugIncubator
       v-if="isDev"
-      :egg-id="egg?.id"
-      :chick-id="chick?.id"
+      :egg-id="eggs[0]?.id"
+      :chick-id="chicks[0]?.id"
       @refresh="fetchStatus"
     />
   </div>
