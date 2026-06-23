@@ -43,6 +43,13 @@
       "when": 1782063694715,
       "tag": "0005_add_fed_at_watered_at_to_chickens",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1782248931428,
+      "tag": "0006_add_chicken_stages",
+      "breakpoints": true
     }
   ]
 }

@@ -1,4 +1,5 @@
 export * from "./chickens"
 export * from "./inventory"
 export * from "./scratchCardPlays"
+export * from "./stages"
 export * from "./users"

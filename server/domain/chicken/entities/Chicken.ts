@@ -114,6 +114,15 @@ export class Chicken {
     )
   }
 
+  graduate(): Chicken {
+    return new Chicken(
+      this.id, this.userId, this.name, CHICKEN_LEVELS.APPRENTICE,
+      this.xp, this.stats, this.hatchAt,
+      this.fedAt, this.wateredAt,
+      this.humidityAdjustedAt, this.temperatureAdjustedAt, this.turnedAt,
+    )
+  }
+
   // --- Combat (future use) ---
 
   gainXP(amount: number): Chicken {
