@@ -18,5 +18,9 @@ export function useDebugApi() {
       api.post<{ ok: boolean }>(`/api/debug/chicken/${id}/drift-care`, {}),
     resetCare: (id: number) =>
       api.post<{ ok: boolean }>(`/api/debug/chicken/${id}/reset-care`, {}),
+    completeStages: (id: number) =>
+      api.post<{ ok: boolean }>(`/api/debug/chicken/${id}/complete-stages`, {}),
+    resetStages: (id: number) =>
+      api.post<{ ok: boolean }>(`/api/debug/chicken/${id}/reset-stages`, {}),
   }
 }

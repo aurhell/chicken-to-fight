@@ -4,7 +4,7 @@ import { ref } from "vue"
 import { useAuthStore } from "~/application/auth/useAuthStore"
 import { useDebugApi } from "~/infrastructure/api/debug"
 
-const props = defineProps<{ eggId?: number; chickId?: number }>()
+const props = defineProps<{ eggId?: number; chickId?: number; adolescentId?: number }>()
 const emit = defineEmits<{ refresh: [] }>()
 
 const auth = useAuthStore()
@@ -60,6 +60,28 @@ async function fastGrowChick() {
   loading.value = true
   try {
     await api.fastGrowChick()
+    emit("refresh")
+  } finally {
+    loading.value = false
+  }
+}
+
+async function completeStages() {
+  if (!props.adolescentId) return
+  loading.value = true
+  try {
+    await api.completeStages(props.adolescentId)
+    emit("refresh")
+  } finally {
+    loading.value = false
+  }
+}
+
+async function resetStages() {
+  if (!props.adolescentId) return
+  loading.value = true
+  try {
+    await api.resetStages(props.adolescentId)
     emit("refresh")
   } finally {
     loading.value = false
@@ -123,6 +145,22 @@ async function fastGrowChick() {
         @click="fastGrowChick"
       >
         ⏩ Passer 3 jours
+      </button>
+    </template>
+    <template v-if="adolescentId">
+      <button
+        class="rounded bg-emerald-500 px-2 py-1 font-ui text-xs text-white disabled:opacity-50"
+        :disabled="loading"
+        @click="completeStages"
+      >
+        ✅ Compléter 6 stages
+      </button>
+      <button
+        class="rounded bg-gray-500 px-2 py-1 font-ui text-xs text-white disabled:opacity-50"
+        :disabled="loading"
+        @click="resetStages"
+      >
+        🔄 Reset stages
       </button>
     </template>
   </div>
