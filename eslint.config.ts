@@ -246,9 +246,10 @@ const config = defineConfigWithVueTs(
       "no-implied-eval": "error",
       "no-lonely-if": "error",
       "no-magic-numbers": [
-        "warn",
+        "error",
         {
           ignore: [
+            -1,
             0,
             1,
           ],
