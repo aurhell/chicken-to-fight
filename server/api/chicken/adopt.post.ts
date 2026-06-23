@@ -5,6 +5,8 @@ import { requireAuth } from "../../infrastructure/auth/session"
 import { DrizzleChickenRepository } from "../../infrastructure/db/repositories/DrizzleChickenRepository"
 import { DrizzleUserRepository } from "../../infrastructure/db/repositories/DrizzleUserRepository"
 
+const HTTP_SERVER_ERROR = 500
+
 const DOMAIN_ERRORS: Record<string, number> = {
   "Not enough gold": 422,
   "Already incubating an egg": 409,
@@ -26,7 +28,7 @@ export default defineEventHandler(async(event) => {
   } catch(e) {
     const msg = e instanceof Error ? e.message : "Adoption failed"
     throw createError({
-      statusCode: DOMAIN_ERRORS[msg] ?? 500,
+      statusCode: DOMAIN_ERRORS[msg] ?? HTTP_SERVER_ERROR,
       message: msg, 
     })
   }

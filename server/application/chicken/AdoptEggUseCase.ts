@@ -6,8 +6,9 @@ import type { IChickenRepository } from "../../domain/chicken/repositories/IChic
 import type { IUserRepository } from "../../domain/user/repositories/IUserRepository"
 
 const MS_PER_HOUR = 3_600_000
+const FULL_STAT = 100
 
-const DEFAULT_STATS = new ChickenStats(100, 100, 100, 0)
+const DEFAULT_STATS = new ChickenStats(FULL_STAT, FULL_STAT, FULL_STAT, 0)
 
 export type AdoptEggInput = {
   userId: number

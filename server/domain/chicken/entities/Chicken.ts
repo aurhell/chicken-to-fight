@@ -9,7 +9,8 @@ export { INCUBATION_DURATION_H, CARE_DRIFT_H, EGG_ADOPTION_COST, CHICKEN_SELL_PR
 export { CHICKEN_SELL_PRICES } from "#shared/chicken/SellPrice"
 
 const MS_PER_HOUR = 3_600_000
-const MS_PER_DAY = 24 * MS_PER_HOUR
+const MS_PER_DAY = 86_400_000
+const FULL_STAT = 100
 
 export type CareAction = "humidity" | "temperature" | "turn"
 
@@ -129,7 +130,7 @@ export function createEgg(userId: number, name: string, now = new Date()): Omit<
   const hatchAt = new Date(now.getTime() + INCUBATION_DURATION_H * MS_PER_HOUR)
   return new Chicken(
     0, userId, name, CHICKEN_LEVELS.EGG,
-    new XPLevel(0), new ChickenStats(100, 100, 100, 0),
+    new XPLevel(0), new ChickenStats(FULL_STAT, FULL_STAT, FULL_STAT, 0),
     hatchAt, null, null,
     now, now, now,
   ) as Chicken & { id: 0 }

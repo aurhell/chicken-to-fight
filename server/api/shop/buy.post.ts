@@ -5,6 +5,8 @@ import { requireAuth } from "../../infrastructure/auth/session"
 import { DrizzleInventoryRepository } from "../../infrastructure/db/repositories/DrizzleInventoryRepository"
 import { DrizzleUserRepository } from "../../infrastructure/db/repositories/DrizzleUserRepository"
 
+const HTTP_SERVER_ERROR = 500
+
 const DOMAIN_ERRORS: Record<string, number> = {
   "Unknown shop item": 400,
   "Insufficient gold": 422,
@@ -26,7 +28,7 @@ export default defineEventHandler(async(event) => {
     })
   } catch(e) {
     const message = e instanceof Error ? e.message : "Unknown error"
-    const statusCode = DOMAIN_ERRORS[message] ?? 500
+    const statusCode = DOMAIN_ERRORS[message] ?? HTTP_SERVER_ERROR
     throw createError({
       statusCode,
       message, 

@@ -3,6 +3,7 @@ import { requireAuth } from "../../infrastructure/auth/session"
 import { DrizzleChickenRepository } from "../../infrastructure/db/repositories/DrizzleChickenRepository"
 
 const MS_PER_DAY = 86_400_000
+const BUFFER_MS = 1_000
 
 export default defineEventHandler(async(event) => {
   const userId = await requireAuth(event)
@@ -14,7 +15,7 @@ export default defineEventHandler(async(event) => {
     message: "No chick found",
   })
 
-  const threeDaysAgo = new Date(Date.now() - (CHICK_GROWTH_DAYS * MS_PER_DAY + 1_000))
+  const threeDaysAgo = new Date(Date.now() - (CHICK_GROWTH_DAYS * MS_PER_DAY + BUFFER_MS))
   const advanced = new Chicken(
     chick.id, chick.userId, chick.name, chick.level,
     chick.xp, chick.stats, threeDaysAgo,

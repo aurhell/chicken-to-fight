@@ -3,6 +3,8 @@ import { requireAuth } from "../../../infrastructure/auth/session"
 import { DrizzleChickenRepository } from "../../../infrastructure/db/repositories/DrizzleChickenRepository"
 import { DrizzleInventoryRepository } from "../../../infrastructure/db/repositories/DrizzleInventoryRepository"
 
+const HTTP_SERVER_ERROR = 500
+
 const DOMAIN_ERRORS: Record<string, number> = {
   "Chicken not found": 404,
   "Not your chicken": 403,
@@ -26,7 +28,7 @@ export default defineEventHandler(async(event) => {
     })
   } catch(e) {
     const message = e instanceof Error ? e.message : "Unknown error"
-    const statusCode = DOMAIN_ERRORS[message] ?? 500
+    const statusCode = DOMAIN_ERRORS[message] ?? HTTP_SERVER_ERROR
     throw createError({
       statusCode,
       message, 
