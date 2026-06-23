@@ -5,6 +5,7 @@ import { useI18n } from "vue-i18n"
 import { CHICK_GROWTH_DAYS, HUNGER_DRAIN_H, THIRST_DRAIN_H } from "#shared/chicken/ChickenConstants"
 import { CHICKEN_LEVELS } from "#shared/chicken/ChickenLevel"
 import { CHICKEN_SELL_PRICES } from "#shared/chicken/SellPrice"
+import ducklingImg from "~/assets/images/duckling.png"
 import { careBarPct } from "~/domain/chicken/ChickCare"
 import { useChickenApi, type ChickStatus, type Resources } from "~/infrastructure/api/chicken"
 import PixelButton from "~/presentation/components/ui/PixelButton.vue"
@@ -12,6 +13,8 @@ import PixelCard from "~/presentation/components/ui/PixelCard.vue"
 
 const MS_PER_DAY = 86_400_000
 const BAR_UPDATE_INTERVAL_MS = 5_000
+const LOW_BAR_THRESHOLD_PCT = 25
+const FULL_PCT = 100
 
 const props = defineProps<{
   chick: ChickStatus
@@ -41,14 +44,14 @@ onBeforeUnmount(() => { if (ticker) clearInterval(ticker) })
 const hungerPct = computed(() => careBarPct(props.chick.fedAt, HUNGER_DRAIN_H, now.value))
 const thirstPct = computed(() => careBarPct(props.chick.wateredAt, THIRST_DRAIN_H, now.value))
 
-const hungerLow = computed(() => hungerPct.value < 25)
-const thirstLow = computed(() => thirstPct.value < 25)
+const hungerLow = computed(() => hungerPct.value < LOW_BAR_THRESHOLD_PCT)
+const thirstLow = computed(() => thirstPct.value < LOW_BAR_THRESHOLD_PCT)
 
 const growProgressPct = computed(() => {
-  if (!props.chick.bornAt) return 100
+  if (!props.chick.bornAt) return FULL_PCT
   const born = new Date(props.chick.bornAt).getTime()
   const elapsed = Date.now() - born
-  return Math.min(100, Math.round((elapsed / (CHICK_GROWTH_DAYS * MS_PER_DAY)) * 100))
+  return Math.min(FULL_PCT, Math.round((elapsed / (CHICK_GROWTH_DAYS * MS_PER_DAY)) * FULL_PCT))
 })
 
 const msUntilGrown = computed(() => {
@@ -93,7 +96,16 @@ async function sell() {
 <template>
   <PixelCard :title="chick.name">
     <div class="flex flex-col items-center gap-6 py-4 text-center">
-      <span class="text-7xl leading-none">{{ isAdolescent ? "🐔" : "🐣" }}</span>
+      <img
+        v-if="!isAdolescent"
+        :src="ducklingImg"
+        :alt="chick.name"
+        class="mx-auto h-32 w-auto"
+      >
+      <span
+        v-else
+        class="text-7xl leading-none"
+      >🐔</span>
 
       <p class="font-ui text-base text-pixel-black">
         {{ isAdolescent ? t("Your chicken is growing up!") : t("Welcome, {name}!", { name: chick.name }) }}
