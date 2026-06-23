@@ -2,12 +2,14 @@
 import { computed, onMounted } from "vue"
 import { useI18n } from "vue-i18n"
 
+import { CHICKEN_LEVELS } from "#shared/chicken/ChickenLevel"
 import { useIncubation } from "~/application/chicken/useIncubation"
 import ChickenCard from "~/presentation/components/chicken/ChickenCard.vue"
 import DebugIncubator from "~/presentation/components/chicken/DebugIncubator.vue"
 import EggAdoptForm from "~/presentation/components/chicken/EggAdoptForm.vue"
 import EggIncubator from "~/presentation/components/chicken/EggIncubator.vue"
 import EggOutcomeScreen from "~/presentation/components/chicken/EggOutcomeScreen.vue"
+import GraduationScreen from "~/presentation/components/chicken/GraduationScreen.vue"
 import PixelButton from "~/presentation/components/ui/PixelButton.vue"
 import PixelCard from "~/presentation/components/ui/PixelCard.vue"
 
@@ -17,8 +19,9 @@ const { t } = useI18n()
 const isDev = import.meta.dev
 
 const {
-  eggs, chicks, resources, loading, outcome, chickenDied,
-  fetchStatus, onAdopted, onOutcome, dismissOutcome, dismissDeath, onSold, onFed, onWatered,
+  eggs, chicks, resources, loading, outcome, chickenDied, graduatedName,
+  fetchStatus, onAdopted, onOutcome, dismissOutcome, dismissDeath, dismissGraduation,
+  onSold, onFed, onWatered, onStageStarted, onGraduated,
 } = useIncubation()
 
 const isEmpty = computed(() => eggs.value.length === 0 && chicks.value.length === 0)
@@ -45,6 +48,12 @@ onMounted(fetchStatus)
       :result="outcome.result"
       :chicken-name="outcome.chickenName"
       @dismiss="dismissOutcome"
+    />
+
+    <GraduationScreen
+      v-else-if="graduatedName"
+      :chicken-name="graduatedName"
+      @dismiss="dismissGraduation"
     />
 
     <!-- Écran de mort (uniquement si plus aucun poulet ni oeuf) -->
@@ -87,6 +96,8 @@ onMounted(fetchStatus)
           @sold="onSold"
           @fed="(id, fedAt, flour) => onFed(id, fedAt, flour)"
           @watered="(id, wateredAt, water) => onWatered(id, wateredAt, water)"
+          @stage-started="(id, stageId, startedAt, completesAt) => onStageStarted(id, stageId, startedAt, completesAt)"
+          @graduated="(id, name) => onGraduated(id, name)"
         />
 
         <!-- Adopter un nouvel oeuf -->
@@ -97,7 +108,8 @@ onMounted(fetchStatus)
     <DebugIncubator
       v-if="isDev"
       :egg-id="eggs[0]?.id"
-      :chick-id="chicks[0]?.id"
+      :chick-id="chicks.find(c => c.level === CHICKEN_LEVELS.CHICK)?.id"
+      :adolescent-id="chicks.find(c => c.level === CHICKEN_LEVELS.ADOLESCENT)?.id"
       @refresh="fetchStatus"
     />
   </div>

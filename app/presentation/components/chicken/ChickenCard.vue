@@ -5,9 +5,11 @@ import { useI18n } from "vue-i18n"
 import { CHICK_GROWTH_DAYS, HUNGER_DRAIN_H, THIRST_DRAIN_H } from "#shared/chicken/ChickenConstants"
 import { CHICKEN_LEVELS } from "#shared/chicken/ChickenLevel"
 import { CHICKEN_SELL_PRICES } from "#shared/chicken/SellPrice"
+import duckBaseImg from "~/assets/images/duck-base.png"
 import ducklingImg from "~/assets/images/duckling.png"
 import { careBarPct } from "~/domain/chicken/ChickCare"
 import { useChickenApi, type ChickStatus, type Resources } from "~/infrastructure/api/chicken"
+import StagePanel from "~/presentation/components/chicken/StagePanel.vue"
 import PixelButton from "~/presentation/components/ui/PixelButton.vue"
 import PixelCard from "~/presentation/components/ui/PixelCard.vue"
 
@@ -24,6 +26,8 @@ const emit = defineEmits<{
   sold: []
   fed: [chickenId: number, fedAt: string, flour: number]
   watered: [chickenId: number, wateredAt: string, water: number]
+  stageStarted: [chickenId: number, stageId: string, startedAt: string, completesAt: string]
+  graduated: [chickenId: number, name: string]
 }>()
 
 const { t } = useI18n()
@@ -32,7 +36,9 @@ const selling = ref(false)
 const feeding = ref(false)
 const watering = ref(false)
 
+const isChick = computed(() => props.chick.level === CHICKEN_LEVELS.CHICK)
 const isAdolescent = computed(() => props.chick.level === CHICKEN_LEVELS.ADOLESCENT)
+const isFighter = computed(() => props.chick.level >= CHICKEN_LEVELS.APPRENTICE)
 
 // Real-time now for bar drain calculation
 const now = ref(Date.now())
@@ -97,112 +103,123 @@ async function sell() {
   <PixelCard :title="chick.name">
     <div class="flex flex-col items-center gap-6 py-4 text-center">
       <img
-        v-if="!isAdolescent"
-        :src="ducklingImg"
+        :src="isChick ? ducklingImg : duckBaseImg"
         :alt="chick.name"
         class="mx-auto h-32 w-auto"
       >
-      <span
-        v-else
-        class="text-7xl leading-none"
-      >🐔</span>
 
-      <p class="font-ui text-base text-pixel-black">
-        {{ isAdolescent ? t("Your chicken is growing up!") : t("Welcome, {name}!", { name: chick.name }) }}
-      </p>
+      <!-- Fighter (apprenti et au-delà) -->
+      <template v-if="isFighter">
+        <p class="font-ui text-base text-pixel-black">
+          {{ t("Apprentice Fighter") }}
+        </p>
+        <p class="font-ui text-sm text-pixel-gray">
+          {{ t("Ready for combat. Coming soon.") }}
+        </p>
+      </template>
 
-      <!-- Barres de survie (poussin uniquement) -->
-      <div
-        v-if="!isAdolescent"
-        class="flex w-full flex-col gap-4"
-      >
-        <!-- Faim -->
+      <!-- Adolescent -->
+      <template v-else-if="isAdolescent">
+        <p class="font-ui text-base text-pixel-black">
+          {{ t("Your chicken is growing up!") }}
+        </p>
+        <StagePanel
+          class="w-full"
+          :chicken-id="chick.id"
+          :stages="chick.stages"
+          :can-graduate="chick.canGraduate"
+          @stage-started="(stageId, startedAt, completesAt) => emit('stageStarted', chick.id, stageId, startedAt, completesAt)"
+          @graduated="emit('graduated', chick.id, chick.name)"
+        />
+      </template>
+
+      <!-- Poussin -->
+      <template v-else>
+        <p class="font-ui text-base text-pixel-black">
+          {{ t("Welcome, {name}!", { name: chick.name }) }}
+        </p>
+
+        <!-- Barres de survie -->
+        <div class="flex w-full flex-col gap-4">
+          <div class="w-full">
+            <div class="mb-2 flex items-center justify-between">
+              <span class="font-ui text-base text-pixel-black">🌾 {{ t("Hunger") }}</span>
+              <span
+                class="font-ui text-base font-bold"
+                :class="hungerLow ? 'text-red-500' : 'text-pixel-black'"
+              >{{ hungerPct }}%</span>
+            </div>
+            <div class="h-4 w-full overflow-hidden border-4 border-pixel-black bg-pixel-white">
+              <div
+                class="h-full transition-all duration-500"
+                :class="hungerLow ? 'bg-red-500' : 'bg-amber-500'"
+                :style="{ width: `${hungerPct}%` }"
+              />
+            </div>
+          </div>
+          <div class="w-full">
+            <div class="mb-2 flex items-center justify-between">
+              <span class="font-ui text-base text-pixel-black">💧 {{ t("Thirst") }}</span>
+              <span
+                class="font-ui text-base font-bold"
+                :class="thirstLow ? 'text-red-500' : 'text-pixel-black'"
+              >{{ thirstPct }}%</span>
+            </div>
+            <div class="h-4 w-full overflow-hidden border-4 border-pixel-black bg-pixel-white">
+              <div
+                class="h-full transition-all duration-500"
+                :class="thirstLow ? 'bg-red-500' : 'bg-sky-500'"
+                :style="{ width: `${thirstPct}%` }"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Progression niveau 3 -->
         <div class="w-full">
           <div class="mb-2 flex items-center justify-between">
-            <span class="font-ui text-base text-pixel-black">🌾 {{ t("Hunger") }}</span>
-            <span
-              class="font-ui text-base font-bold"
-              :class="hungerLow ? 'text-red-500' : 'text-pixel-black'"
-            >{{ hungerPct }}%</span>
+            <span class="font-ui text-base text-pixel-black">{{ t("Level 3 in {n} day(s)", { n: daysLeft }) }}</span>
+            <span class="font-ui text-base font-bold text-pixel-green">{{ growProgressPct }}%</span>
           </div>
           <div class="h-4 w-full overflow-hidden border-4 border-pixel-black bg-pixel-white">
             <div
-              class="h-full transition-all duration-500"
-              :class="hungerLow ? 'bg-red-500' : 'bg-amber-500'"
-              :style="{ width: `${hungerPct}%` }"
+              class="h-full bg-pixel-green transition-all duration-300"
+              :style="{ width: `${growProgressPct}%` }"
             />
           </div>
         </div>
 
-        <!-- Soif -->
-        <div class="w-full">
-          <div class="mb-2 flex items-center justify-between">
-            <span class="font-ui text-base text-pixel-black">💧 {{ t("Thirst") }}</span>
-            <span
-              class="font-ui text-base font-bold"
-              :class="thirstLow ? 'text-red-500' : 'text-pixel-black'"
-            >{{ thirstPct }}%</span>
+        <!-- Ressources -->
+        <div class="flex w-full justify-center gap-6">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">💧</span>
+            <span class="font-ui text-base font-bold text-pixel-black">{{ resources.water }}</span>
           </div>
-          <div class="h-4 w-full overflow-hidden border-4 border-pixel-black bg-pixel-white">
-            <div
-              class="h-full transition-all duration-500"
-              :class="thirstLow ? 'bg-red-500' : 'bg-sky-500'"
-              :style="{ width: `${thirstPct}%` }"
-            />
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🌾</span>
+            <span class="font-ui text-base font-bold text-pixel-black">{{ resources.flour }}</span>
           </div>
         </div>
-      </div>
 
-      <!-- Progression niveau 3 -->
-      <div
-        v-if="!isAdolescent"
-        class="w-full"
-      >
-        <div class="mb-2 flex items-center justify-between">
-          <span class="font-ui text-base text-pixel-black">{{ t("Level 3 in {n} day(s)", { n: daysLeft }) }}</span>
-          <span class="font-ui text-base font-bold text-pixel-green">{{ growProgressPct }}%</span>
+        <div class="flex w-full gap-3">
+          <PixelButton
+            class="flex-1"
+            variant="primary"
+            :disabled="feeding || resources.flour < 1"
+            @click="feed"
+          >
+            {{ feeding ? t("Feeding…") : t("Feed (1🌾)") }}
+          </PixelButton>
+          <PixelButton
+            class="flex-1"
+            variant="primary"
+            :disabled="watering || resources.water < 1"
+            @click="giveWater"
+          >
+            {{ watering ? t("Watering…") : t("Water (1💧)") }}
+          </PixelButton>
         </div>
-        <div class="h-4 w-full overflow-hidden border-4 border-pixel-black bg-pixel-white">
-          <div
-            class="h-full bg-pixel-green transition-all duration-300"
-            :style="{ width: `${growProgressPct}%` }"
-          />
-        </div>
-      </div>
-
-      <!-- Ressources -->
-      <div class="flex w-full justify-center gap-6">
-        <div class="flex items-center gap-2">
-          <span class="text-2xl">💧</span>
-          <span class="font-ui text-base font-bold text-pixel-black">{{ resources.water }}</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-2xl">🌾</span>
-          <span class="font-ui text-base font-bold text-pixel-black">{{ resources.flour }}</span>
-        </div>
-      </div>
-
-      <div
-        v-if="!isAdolescent"
-        class="flex w-full gap-3"
-      >
-        <PixelButton
-          class="flex-1"
-          variant="primary"
-          :disabled="feeding || resources.flour < 1"
-          @click="feed"
-        >
-          {{ feeding ? t("Feeding…") : t("Feed (1🌾)") }}
-        </PixelButton>
-        <PixelButton
-          class="flex-1"
-          variant="primary"
-          :disabled="watering || resources.water < 1"
-          @click="giveWater"
-        >
-          {{ watering ? t("Watering…") : t("Water (1💧)") }}
-        </PixelButton>
-      </div>
+      </template>
 
       <PixelButton
         class="w-full"

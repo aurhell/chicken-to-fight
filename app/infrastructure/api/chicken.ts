@@ -21,6 +21,23 @@ export type HatchResult = {
   result: "hatched" | "lost"
 }
 
+export type StageInfo = {
+  stageId: string
+  status: "not_started" | "in_progress" | "completed"
+  startedAt: string | null
+  completesAt: string | null
+}
+
+export type StartStageResult = {
+  stageId: string
+  startedAt: string
+  completesAt: string
+}
+
+export type GraduateResult = {
+  level: number
+}
+
 export type ChickStatus = {
   id: number
   name: string
@@ -28,6 +45,8 @@ export type ChickStatus = {
   bornAt: string | null
   fedAt: string | null
   wateredAt: string | null
+  stages: StageInfo[]
+  canGraduate: boolean
 }
 
 export type Resources = {
@@ -78,5 +97,9 @@ export function useChickenApi() {
       api.post<FeedResult>(`/api/chicken/${id}/feed`, {}),
     water: (id: number) =>
       api.post<WaterResult>(`/api/chicken/${id}/water`, {}),
+    startStage: (id: number, stageId: string) =>
+      api.post<StartStageResult>(`/api/chicken/${id}/stage/start`, { stageId }),
+    graduate: (id: number) =>
+      api.post<GraduateResult>(`/api/chicken/${id}/graduate`, {}),
   }
 }

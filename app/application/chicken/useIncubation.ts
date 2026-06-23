@@ -18,6 +18,7 @@ export function useIncubation() {
   const loading = ref(true)
   const outcome = ref<HatchOutcome | null>(null)
   const chickenDied = ref(false)
+  const graduatedName = ref<string | null>(null)
 
   async function fetchStatus() {
     loading.value = true
@@ -78,13 +79,54 @@ export function useIncubation() {
     if (idx !== -1) {
       chicks.value = chicks.value.map((c, i) => i === idx ? {
         ...c,
-        wateredAt, 
+        wateredAt,
       } : c)
     }
     resources.value = {
       ...resources.value,
-      water, 
+      water,
     }
+  }
+
+  function onStageStarted(chickenId: number, stageId: string, startedAt: string, completesAt: string) {
+    const idx = chicks.value.findIndex(c => c.id === chickenId)
+    if (idx !== -1) {
+      chicks.value = chicks.value.map((c, i) => {
+        if (i !== idx) return c
+        const stages = c.stages.map(s =>
+          s.stageId === stageId
+            ? {
+              ...s,
+              status: "in_progress" as const,
+              startedAt,
+              completesAt, 
+            }
+            : s,
+        )
+        const alreadyHas = c.stages.some(s => s.stageId === stageId)
+        return {
+          ...c,
+          stages: alreadyHas ? stages : [
+            ...stages,
+            {
+              stageId,
+              status: "in_progress" as const,
+              startedAt,
+              completesAt, 
+            },
+          ],
+        }
+      })
+    }
+  }
+
+  async function onGraduated(_id: number, name: string) {
+    graduatedName.value = name
+    await fetchStatus()
+  }
+
+  function dismissGraduation() {
+    graduatedName.value = null
   }
 
   return {
@@ -94,13 +136,17 @@ export function useIncubation() {
     loading,
     outcome,
     chickenDied,
+    graduatedName,
     fetchStatus,
     onAdopted,
     onOutcome,
     dismissOutcome,
     dismissDeath,
+    dismissGraduation,
     onSold,
     onFed,
     onWatered,
+    onStageStarted,
+    onGraduated,
   }
 }
