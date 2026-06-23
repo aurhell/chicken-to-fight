@@ -4,6 +4,8 @@ import { useI18n } from "vue-i18n"
 
 import { CHICKEN_LEVELS } from "#shared/chicken/ChickenLevel"
 import { CHICKEN_SELL_PRICES } from "#shared/chicken/SellPrice"
+import egg1Src from "~/assets/images/egg-stade-1.jpeg"
+import egg2Src from "~/assets/images/egg-stade-2.jpeg"
 import { useChickenApi, type EggStatus } from "~/infrastructure/api/chicken"
 import PixelButton from "~/presentation/components/ui/PixelButton.vue"
 import PixelCard from "~/presentation/components/ui/PixelCard.vue"
@@ -26,17 +28,24 @@ const turnedOk = ref(props.egg.turnedOk)
 const loadingAction = ref<string | null>(null)
 const hatching = ref(false)
 
+const MS_PER_SECOND = 1_000
+const MS_PER_MINUTE = 60_000
+const MS_PER_HOUR = 3_600_000
+const TIMER_PAD_DIGITS = 2
+const HATCH_WARNING_MS = 600_000
+
 const hatchAt = new Date(props.egg.hatchAt)
 
 const timeLeft = ref(Math.max(0, hatchAt.getTime() - Date.now()))
 let ticker: ReturnType<typeof setInterval>
 
-const hours = computed(() => Math.floor(timeLeft.value / 3_600_000))
-const minutes = computed(() => Math.floor((timeLeft.value % 3_600_000) / 60_000))
-const seconds = computed(() => Math.floor((timeLeft.value % 60_000) / 1_000))
+const eggImage = computed(() => timeLeft.value < HATCH_WARNING_MS ? egg2Src : egg1Src)
+const hours = computed(() => Math.floor(timeLeft.value / MS_PER_HOUR))
+const minutes = computed(() => Math.floor((timeLeft.value % MS_PER_HOUR) / MS_PER_MINUTE))
+const seconds = computed(() => Math.floor((timeLeft.value % MS_PER_MINUTE) / MS_PER_SECOND))
 
 function pad(n: number): string {
-  return String(n).padStart(2, "0")
+  return String(n).padStart(TIMER_PAD_DIGITS, "0")
 }
 
 async function resolveHatch() {
@@ -54,7 +63,7 @@ onMounted(() => {
   ticker = setInterval(() => {
     timeLeft.value = Math.max(0, hatchAt.getTime() - Date.now())
     if (timeLeft.value === 0) resolveHatch()
-  }, 1_000)
+  }, MS_PER_SECOND)
 })
 
 onUnmounted(() => clearInterval(ticker))
@@ -86,9 +95,11 @@ async function care(action: "humidity" | "temperature" | "turn") {
   <PixelCard :title="egg.name">
     <!-- Timer -->
     <div class="mb-6 text-center">
-      <div class="mb-2 text-6xl leading-none">
-        🥚
-      </div>
+      <img
+        :src="eggImage"
+        :alt="egg.name"
+        class="mx-auto mb-2 h-32 w-auto"
+      >
       <p class="font-pixel text-[8px] leading-loose text-pixel-gray">
         {{ t("Hatches in") }}
       </p>
