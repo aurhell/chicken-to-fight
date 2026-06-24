@@ -14,32 +14,37 @@ const items = computed(() => [
     icon: "🏠",
     label: t("Farm"),
     to: "/dashboard",
+    soon: false,
   },
   {
-    icon: "🎰",
+    icon: "⚔️",
+    label: t("Combat"),
+    to: null,
+    soon: true,
+  },
+  {
+    icon: "🎮",
     label: t("Games"),
     to: "/minigames/grat-chicken",
+    soon: false,
   },
   {
-    icon: "🎒",
-    label: t("Inventory"),
-    to: "/inventory",
-  },
-  {
-    icon: "🛒",
-    label: t("Shop"),
+    icon: "💰",
+    label: t("Market"),
     to: "/shop",
-  },
-  {
-    icon: "⚙️",
-    label: t("Settings"),
-    to: null,
+    soon: false,
   },
 ])
 
 function isActive(to: string | null): boolean {
   if (!to) return false
-  return route.path === localePath(to)
+  if (to === "/dashboard") {
+    return route.path.startsWith(localePath("/dashboard")) || route.path.startsWith(localePath("/incubator"))
+  }
+  if (to === "/shop") {
+    return route.path.startsWith(localePath("/shop")) || route.path.startsWith(localePath("/inventory"))
+  }
+  return route.path.startsWith(localePath(to))
 }
 </script>
 
@@ -52,7 +57,7 @@ function isActive(to: string | null): boolean {
         class="flex flex-1 items-stretch"
       >
         <NuxtLink
-          v-if="item.to"
+          v-if="item.to && !item.soon"
           :to="localePath(item.to)"
           class="flex flex-1 flex-col items-center justify-center gap-1"
           :class="isActive(item.to) ? 'text-pixel-gold' : 'text-pixel-gray'"

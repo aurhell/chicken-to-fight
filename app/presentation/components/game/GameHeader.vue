@@ -1,48 +1,14 @@
 <script setup lang="ts">
 import { ref, watch } from "vue"
-import { useI18n } from "vue-i18n"
-import { useRoute } from "vue-router"
 
-import { useLocalePath } from "#imports"
 import { useAuthStore } from "~/application/auth/useAuthStore"
 import goldSoundSrc from "~/assets/sounds/gold.mp3"
 import paySoundSrc from "~/assets/sounds/pay.mp3"
 import { useSound } from "~/composables/useSound"
 import LanguageSwitcher from "~/presentation/components/LanguageSwitcher.vue"
-import GameTitle from "~/presentation/components/game/GameTitle.vue"
 import PixelButton from "~/presentation/components/ui/PixelButton.vue"
 
-const { t } = useI18n()
-const localePath = useLocalePath()
-const route = useRoute()
 const auth = useAuthStore()
-
-const navItems = [
-  {
-    label: "Farm",
-    icon: "🏠",
-    to: "/dashboard",
-  },
-  {
-    label: "Games",
-    icon: "🎰",
-    to: "/minigames/grat-chicken",
-  },
-  {
-    label: "Inventory",
-    icon: "🎒",
-    to: "/inventory",
-  },
-  {
-    label: "Shop",
-    icon: "🛒",
-    to: "/shop",
-  },
-]
-
-function isActive(to: string): boolean {
-  return route.path.startsWith(localePath(to))
-}
 
 const goldDelta = ref<number | null>(null)
 const animKey = ref(0)
@@ -61,35 +27,15 @@ watch(() => auth.user?.gold, (newVal, oldVal) => {
 </script>
 
 <template>
-  <header class="sticky top-0 z-40 border-b-4 border-pixel-black bg-pixel-black">
-    <div class="flex items-center justify-between px-4 py-3 md:px-6">
+  <header class="sticky top-0 z-40 border-b-4 border-pixel-black bg-pixel-black md:hidden">
+    <div class="flex items-center justify-between px-4 py-3">
       <div class="flex items-center gap-3">
         <img
           src="~/assets/images/CTF-revival-logo.png"
           alt="Chicken to Fight"
           class="h-10 w-auto"
         >
-        <GameTitle
-          compact
-          variant="light"
-          class="hidden md:block"
-        />
       </div>
-
-      <nav class="hidden items-center gap-1 md:flex">
-        <NuxtLink
-          v-for="item in navItems"
-          :key="item.to"
-          :to="localePath(item.to)"
-          class="flex items-center gap-2 border-b-4 px-4 py-1 font-ui text-sm transition-colors"
-          :class="isActive(item.to)
-            ? 'border-pixel-gold text-pixel-gold'
-            : 'border-transparent text-pixel-gray hover:text-pixel-white'"
-        >
-          <span>{{ item.icon }}</span>
-          <span>{{ t(item.label) }}</span>
-        </NuxtLink>
-      </nav>
 
       <div class="flex items-center gap-3">
         <span class="relative font-ui text-base font-bold text-pixel-gold">
@@ -105,19 +51,14 @@ watch(() => auth.user?.gold, (newVal, oldVal) => {
             {{ goldDelta > 0 ? "+" : "" }}{{ goldDelta }} PO
           </span>
         </span>
-        <span class="hidden font-ui text-base text-pixel-gray-light md:block">
-          {{ auth.user?.username }}
-        </span>
         <LanguageSwitcher variant="light" />
         <PixelButton
           variant="danger"
           @click="auth.logout()"
         >
-          <span class="md:hidden">✕</span>
-          <span class="hidden md:inline">{{ t("Log out") }}</span>
+          ✕
         </PixelButton>
       </div>
     </div>
   </header>
 </template>
-
