@@ -22,5 +22,7 @@ export function useDebugApi() {
       api.post<{ ok: boolean }>(`/api/debug/chicken/${id}/complete-stages`, {}),
     resetStages: (id: number) =>
       api.post<{ ok: boolean }>(`/api/debug/chicken/${id}/reset-stages`, {}),
+    addXp: (id: number) =>
+      api.post<{ xp: number }>(`/api/debug/chicken/${id}/add-xp`, {}),
   }
 }

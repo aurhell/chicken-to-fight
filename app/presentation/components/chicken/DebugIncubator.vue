@@ -4,7 +4,7 @@ import { ref } from "vue"
 import { useAuthStore } from "~/application/auth/useAuthStore"
 import { useDebugApi } from "~/infrastructure/api/debug"
 
-const props = defineProps<{ eggId?: number; chickId?: number; adolescentId?: number }>()
+const props = defineProps<{ eggId?: number; chickId?: number; adolescentId?: number; fighterId?: number }>()
 const emit = defineEmits<{ refresh: [] }>()
 
 const auth = useAuthStore()
@@ -87,6 +87,17 @@ async function resetStages() {
     loading.value = false
   }
 }
+
+async function addXp() {
+  if (!props.fighterId) return
+  loading.value = true
+  try {
+    await api.addXp(props.fighterId)
+    emit("refresh")
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 
 <template>
@@ -161,6 +172,15 @@ async function resetStages() {
         @click="resetStages"
       >
         🔄 Reset stages
+      </button>
+    </template>
+    <template v-if="fighterId">
+      <button
+        class="rounded bg-indigo-500 px-2 py-1 font-ui text-xs text-white disabled:opacity-50"
+        :disabled="loading"
+        @click="addXp"
+      >
+        ⚡ +1000 XP
       </button>
     </template>
   </div>
