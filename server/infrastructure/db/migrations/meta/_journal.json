@@ -50,6 +50,13 @@
       "when": 1782248931428,
       "tag": "0006_add_chicken_stages",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1782324796154,
+      "tag": "0007_add_job_to_chickens",
+      "breakpoints": true
     }
   ]
 }

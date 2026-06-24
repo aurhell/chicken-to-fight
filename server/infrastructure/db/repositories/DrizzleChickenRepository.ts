@@ -6,6 +6,7 @@ import { XPLevel } from "../../../domain/chicken/value-objects/XPLevel"
 import { db } from "../index"
 import { chickens } from "../schema"
 
+import type { JobId } from "#shared/chicken/Job"
 import type { CreateChickenData, IChickenRepository } from "../../../domain/chicken/repositories/IChickenRepository"
 
 type ChickenRow = typeof chickens.$inferSelect
@@ -37,6 +38,8 @@ export class DrizzleChickenRepository implements IChickenRepository {
       humidityAdjustedAt: data.humidityAdjustedAt,
       temperatureAdjustedAt: data.temperatureAdjustedAt,
       turnedAt: data.turnedAt,
+      jobId: data.jobId ?? null,
+      lastSalaryAt: data.lastSalaryAt ?? null,
     }).returning()
     if (!row) throw new Error("Failed to create chicken")
     return this.toEntity(row)
@@ -57,6 +60,8 @@ export class DrizzleChickenRepository implements IChickenRepository {
       humidityAdjustedAt: chicken.humidityAdjustedAt,
       temperatureAdjustedAt: chicken.temperatureAdjustedAt,
       turnedAt: chicken.turnedAt,
+      jobId: chicken.jobId,
+      lastSalaryAt: chicken.lastSalaryAt,
     }).where(eq(chickens.id, chicken.id)).returning()
     if (!row) throw new Error("Failed to save chicken")
     return this.toEntity(row)
@@ -80,6 +85,8 @@ export class DrizzleChickenRepository implements IChickenRepository {
       row.humidityAdjustedAt,
       row.temperatureAdjustedAt,
       row.turnedAt,
+      (row.jobId as JobId | null) ?? null,
+      row.lastSalaryAt,
     )
   }
 }

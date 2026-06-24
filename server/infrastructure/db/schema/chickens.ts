@@ -22,5 +22,7 @@ export const chickens = pgTable("chickens", {
   humidityAdjustedAt: timestamp("humidity_adjusted_at").notNull().defaultNow(),
   temperatureAdjustedAt: timestamp("temperature_adjusted_at").notNull().defaultNow(),
   turnedAt: timestamp("turned_at").notNull().defaultNow(),
+  jobId: text("job_id"),
+  lastSalaryAt: timestamp("last_salary_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 })
