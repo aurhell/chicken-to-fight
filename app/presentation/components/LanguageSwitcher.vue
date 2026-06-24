@@ -24,7 +24,7 @@ const switchLocalePath = useSwitchLocalePath()
       <NuxtLink
         v-if="loc.code !== locale"
         :to="switchLocalePath(loc.code)"
-        class="font-pixel text-[8px]"
+        class="font-pixel text-[12px]"
         :class="variant === 'light' ? 'text-pixel-gold hover:text-pixel-straw' : 'text-pixel-blue hover:text-pixel-blue-light'"
       >
         {{ loc.code.toUpperCase() }}

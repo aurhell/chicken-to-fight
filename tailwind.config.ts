@@ -15,6 +15,19 @@ export default {
     { pattern: /^hover:text-pixel-/ },
   ],
   theme: {
+    fontSize: {
+      xs:    ["1.125rem",  { lineHeight: "1.5rem" }],
+      sm:    ["1.3125rem", { lineHeight: "1.875rem" }],
+      base:  ["1.5rem",    { lineHeight: "2.25rem" }],
+      lg:    ["1.6875rem", { lineHeight: "2.5rem" }],
+      xl:    ["1.875rem",  { lineHeight: "2.5rem" }],
+      "2xl": ["2.25rem",   { lineHeight: "3rem" }],
+      "3xl": ["2.8125rem", { lineHeight: "3.375rem" }],
+      "4xl": ["3.375rem",  { lineHeight: "3.75rem" }],
+      "5xl": ["4.5rem",    { lineHeight: "1" }],
+      "6xl": ["5.625rem",  { lineHeight: "1" }],
+      "7xl": ["6.75rem",   { lineHeight: "1" }],
+    },
     extend: {
       fontFamily: {
         pixel: ['"Press Start 2P"', "monospace"],

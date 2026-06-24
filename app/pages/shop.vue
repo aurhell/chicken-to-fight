@@ -2,6 +2,7 @@
 import { useI18n } from "vue-i18n"
 
 import { useShop } from "~/application/shop/useShop"
+import MarketTabs from "~/presentation/components/market/MarketTabs.vue"
 import ShopItemCard from "~/presentation/components/shop/ShopItemCard.vue"
 
 definePageMeta({ layout: "game" })
@@ -12,12 +13,13 @@ const { items, buying, error, buy } = useShop()
 
 <template>
   <div class="mx-auto max-w-lg px-4 py-6 md:px-6 md:py-10">
+    <MarketTabs />
     <h2 class="mb-6 font-ui text-lg font-bold text-pixel-black">
       {{ t("Shop") }}
     </h2>
 
     <section>
-      <h3 class="mb-3 font-pixel text-[8px] uppercase text-pixel-gray">
+      <h3 class="mb-3 font-pixel text-[12px] uppercase text-pixel-gray">
         {{ t("Food & wellbeing") }}
       </h3>
 

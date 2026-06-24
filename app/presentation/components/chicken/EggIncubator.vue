@@ -100,7 +100,7 @@ async function care(action: "humidity" | "temperature" | "turn") {
         :alt="egg.name"
         class="mx-auto mb-2 h-32 w-auto"
       >
-      <p class="font-pixel text-[8px] leading-loose text-pixel-gray">
+      <p class="font-pixel text-[12px] leading-loose text-pixel-gray">
         {{ t("Hatches in") }}
       </p>
       <p class="font-pixel text-base leading-loose text-pixel-gold">
@@ -115,7 +115,7 @@ async function care(action: "humidity" | "temperature" | "turn") {
           <span class="text-xl">💧</span>
           <span class="font-ui text-base font-bold">{{ t("Humidity") }}</span>
           <span
-            class="font-pixel text-[8px]"
+            class="font-pixel text-[12px]"
             :class="humidityOk ? 'text-pixel-green' : 'text-pixel-red'"
           >
             {{ humidityOk ? "OK" : t("Off") }}
@@ -135,7 +135,7 @@ async function care(action: "humidity" | "temperature" | "turn") {
           <span class="text-xl">🌡️</span>
           <span class="font-ui text-base font-bold">{{ t("Temperature") }}</span>
           <span
-            class="font-pixel text-[8px]"
+            class="font-pixel text-[12px]"
             :class="temperatureOk ? 'text-pixel-green' : 'text-pixel-red'"
           >
             {{ temperatureOk ? "OK" : t("Off") }}
@@ -155,7 +155,7 @@ async function care(action: "humidity" | "temperature" | "turn") {
           <span class="text-xl">🔄</span>
           <span class="font-ui text-base font-bold">{{ t("Turning") }}</span>
           <span
-            class="font-pixel text-[8px]"
+            class="font-pixel text-[12px]"
             :class="turnedOk ? 'text-pixel-green' : 'text-pixel-red'"
           >
             {{ turnedOk ? "OK" : t("Off") }}

@@ -34,7 +34,7 @@ onMounted(fetchStatus)
         <span
           v-for="n in 2"
           :key="n"
-          class="font-pixel text-[8px] leading-none"
+          class="font-pixel text-[12px] leading-none"
           :class="n <= playsRemaining ? 'text-pixel-gold' : 'text-pixel-gray'"
         >
           {{ n <= playsRemaining ? "🎰" : "✕" }}
@@ -80,7 +80,7 @@ onMounted(fetchStatus)
         v-if="state === 'lost'"
         class="mb-6 border-4 border-pixel-black bg-pixel-sand p-4 text-center"
       >
-        <p class="font-pixel text-[8px] leading-relaxed text-pixel-brown">
+        <p class="font-pixel text-[12px] leading-relaxed text-pixel-brown">
           {{ t("No luck this time…") }}
         </p>
       </div>
@@ -88,7 +88,7 @@ onMounted(fetchStatus)
       <!-- Error -->
       <p
         v-if="errorKey"
-        class="mb-4 text-center font-pixel text-[8px] leading-relaxed text-pixel-red"
+        class="mb-4 text-center font-pixel text-[12px] leading-relaxed text-pixel-red"
       >
         ▶ {{ t(errorKey) }}
       </p>

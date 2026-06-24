@@ -100,10 +100,10 @@ Press Start 2P is a bitmap font. **Only use multiples of 8px** or it will render
 
 | Class | Size |
 |-------|------|
-| `text-[8px]` | 8px |
-| `text-base` | 16px |
-| `text-2xl` | 24px |
-| `text-4xl` | 32px |
+| `text-[12px]` | 12px |
+| `text-base` | 24px |
+| `text-2xl` | 36px |
+| `text-4xl` | 54px |
 
 Use `font-ui` (Pixelify Sans) for body text where arbitrary sizes are fine.
 

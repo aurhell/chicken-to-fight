@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n"
 
 import { useInventory } from "~/application/inventory/useInventory"
 import InventoryList from "~/presentation/components/inventory/InventoryList.vue"
+import MarketTabs from "~/presentation/components/market/MarketTabs.vue"
 
 definePageMeta({ layout: "game" })
 
@@ -15,6 +16,7 @@ onMounted(fetchInventory)
 
 <template>
   <div class="mx-auto max-w-lg px-4 py-6 md:px-6 md:py-10">
+    <MarketTabs />
     <h2 class="mb-4 font-ui text-lg font-bold text-pixel-black md:mb-6">
       {{ t("Inventory") }}
     </h2>

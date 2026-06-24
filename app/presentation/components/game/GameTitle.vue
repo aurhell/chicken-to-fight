@@ -26,7 +26,7 @@ withDefaults(defineProps<{
     <p
       class="font-pixel"
       :class="[
-        compact ? 'mt-1 text-[8px]' : 'mt-3 text-base',
+        compact ? 'mt-1 text-[12px]' : 'mt-3 text-base',
         variant === 'light' ? 'text-pixel-red-light' : 'text-pixel-red',
       ]"
     >

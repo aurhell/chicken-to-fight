@@ -135,8 +135,8 @@ async function graduate() {
 <template>
   <div class="flex flex-col gap-3">
     <div class="flex items-center justify-between">
-      <span class="font-pixel text-[8px] text-pixel-gray">{{ t("Training stages") }}</span>
-      <span class="font-pixel text-[8px] text-pixel-gold">{{ completedCount }}/{{ STAGES_REQUIRED }}</span>
+      <span class="font-pixel text-[12px] text-pixel-gray">{{ t("Training stages") }}</span>
+      <span class="font-pixel text-[12px] text-pixel-gold">{{ completedCount }}/{{ STAGES_REQUIRED }}</span>
     </div>
 
     <div
@@ -146,10 +146,10 @@ async function graduate() {
     >
       <div class="flex flex-col gap-1">
         <span class="font-ui text-sm font-bold text-pixel-black">{{ STAGE_LABELS[stage.stageId] }}</span>
-        <span class="font-pixel text-[8px] text-pixel-gray">{{ STAGE_DURATION_LABEL[stage.stageId] }}</span>
+        <span class="font-pixel text-[12px] text-pixel-gray">{{ STAGE_DURATION_LABEL[stage.stageId] }}</span>
         <span
           v-if="stage.status === 'in_progress'"
-          class="font-pixel text-[8px] text-pixel-brown"
+          class="font-pixel text-[12px] text-pixel-brown"
         >
           {{ formatCountdown(msLeft(stage)) }}
         </span>

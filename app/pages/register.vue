@@ -45,7 +45,7 @@ async function submit() {
             class="mx-auto mb-4 h-32 w-auto"
           >
           <GameTitle />
-          <h2 class="mt-4 font-pixel text-[8px] leading-loose text-pixel-black">
+          <h2 class="mt-4 font-pixel text-[12px] leading-loose text-pixel-black">
             {{ t("Join the arena") }}
           </h2>
           <p class="mt-3 font-ui text-base text-pixel-brown">

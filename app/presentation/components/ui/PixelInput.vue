@@ -27,7 +27,7 @@ const model = defineModel<string>()
     >
     <span
       v-if="error"
-      class="font-pixel text-[8px] leading-relaxed text-pixel-red"
+      class="font-pixel text-[12px] leading-relaxed text-pixel-red"
     >
       ▶ {{ error }}
     </span>
