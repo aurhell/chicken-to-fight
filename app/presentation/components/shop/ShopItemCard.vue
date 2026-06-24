@@ -24,7 +24,7 @@ const LABELS: Record<string, string> = {
 </script>
 
 <template>
-  <div class="flex items-center justify-between gap-4 border-4 border-pixel-black bg-pixel-white p-4">
+  <div class="flex flex-col gap-3 border-4 border-pixel-black bg-pixel-white p-4 sm:flex-row sm:items-center sm:justify-between">
     <div class="flex items-center gap-3">
       <span class="text-3xl leading-none">{{ INVENTORY_ITEM_ICONS[item.inventoryKey] ?? "📦" }}</span>
       <div>
@@ -36,8 +36,8 @@ const LABELS: Record<string, string> = {
         </p>
       </div>
     </div>
-    <div class="flex shrink-0 items-center gap-3">
-      <span class="font-pixel text-[8px] text-pixel-gold">{{ item.price }} PO</span>
+    <div class="flex items-center justify-between gap-3 sm:shrink-0 sm:justify-end">
+      <span class="font-pixel text-[12px] text-pixel-gold">{{ item.price }} PO</span>
       <PixelButton
         :disabled="loading"
         @click="emit('buy')"
