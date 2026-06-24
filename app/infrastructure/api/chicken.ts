@@ -38,15 +38,29 @@ export type GraduateResult = {
   level: number
 }
 
+export type ChooseJobResult = {
+  jobId: string
+  dailyIncome: number
+}
+
+export type CollectSalaryResult = {
+  goldEarned: number
+  newGold: number
+}
+
 export type ChickStatus = {
   id: number
   name: string
   level: number
+  xp: number
   bornAt: string | null
   fedAt: string | null
   wateredAt: string | null
   stages: StageInfo[]
   canGraduate: boolean
+  jobId: string | null
+  lastSalaryAt: string | null
+  canCollectSalary: boolean
 }
 
 export type Resources = {
@@ -101,5 +115,9 @@ export function useChickenApi() {
       api.post<StartStageResult>(`/api/chicken/${id}/stage/start`, { stageId }),
     graduate: (id: number) =>
       api.post<GraduateResult>(`/api/chicken/${id}/graduate`, {}),
+    chooseJob: (id: number, jobId: string) =>
+      api.post<ChooseJobResult>(`/api/chicken/${id}/job`, { jobId }),
+    collectSalary: (id: number) =>
+      api.post<CollectSalaryResult>(`/api/chicken/${id}/collect-salary`, {}),
   }
 }

@@ -1,3 +1,4 @@
+import type { JobId } from "#shared/chicken/Job"
 import type { Chicken, ChickenLevel } from "../entities/Chicken"
 import type { ChickenStats } from "../value-objects/ChickenStats"
 import type { XPLevel } from "../value-objects/XPLevel"
@@ -14,6 +15,8 @@ export type CreateChickenData = {
   humidityAdjustedAt: Date
   temperatureAdjustedAt: Date
   turnedAt: Date
+  jobId?: JobId | null
+  lastSalaryAt?: Date | null
 }
 
 export type IChickenRepository = {

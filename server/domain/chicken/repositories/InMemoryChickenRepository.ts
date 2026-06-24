@@ -21,6 +21,7 @@ export class InMemoryChickenRepository implements IChickenRepository {
       data.xp, data.stats, data.hatchAt,
       data.fedAt, data.wateredAt,
       data.humidityAdjustedAt, data.temperatureAdjustedAt, data.turnedAt,
+      data.jobId ?? null, data.lastSalaryAt ?? null,
     )
     this.store.set(id, chicken)
     return chicken

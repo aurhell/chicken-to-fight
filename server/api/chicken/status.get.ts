@@ -61,7 +61,7 @@ export default defineEventHandler(async(event) => {
           stageId,
           status: "not_started" as const,
           startedAt: null,
-          completesAt: null, 
+          completesAt: null,
         }
         const durationMs = STAGE_DURATION_H[stageId as StageId] * MS_PER_HOUR
         const completesAt = new Date(record.startedAt.getTime() + durationMs)
@@ -81,11 +81,15 @@ export default defineEventHandler(async(event) => {
       id: c.id,
       name: c.name,
       level: c.level,
+      xp: c.xp.value,
       bornAt: c.hatchAt,
       fedAt: c.fedAt,
       wateredAt: c.wateredAt,
       stages,
       canGraduate,
+      jobId: c.jobId,
+      lastSalaryAt: c.lastSalaryAt?.toISOString() ?? null,
+      canCollectSalary: c.canCollectSalary(now),
     }
   }))
 

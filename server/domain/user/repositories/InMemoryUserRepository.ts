@@ -45,14 +45,14 @@ export class InMemoryUserRepository implements IUserRepository {
     const updated = new User(u.id, u.username, u.email, u.gold + amount, u.createdAt)
     this.store.set(userId, {
       ...entry,
-      user: updated, 
+      user: updated,
     })
     return updated
   }
 
   async create(data: CreateUserData): Promise<User> {
     const id = this.nextId++
-    const user = new User(id, data.username, data.email, DEFAULT_STARTING_GOLD, new Date())
+    const user = new User(id, data.username, data.email, data.gold ?? DEFAULT_STARTING_GOLD, new Date())
     this.store.set(id, {
       user,
       passwordHash: data.passwordHash,

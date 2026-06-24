@@ -6,10 +6,8 @@ import { CHICKEN_LEVELS } from "#shared/chicken/ChickenLevel"
 import { useIncubation } from "~/application/chicken/useIncubation"
 import ChickenCard from "~/presentation/components/chicken/ChickenCard.vue"
 import DebugIncubator from "~/presentation/components/chicken/DebugIncubator.vue"
-import EggAdoptForm from "~/presentation/components/chicken/EggAdoptForm.vue"
-import EggIncubator from "~/presentation/components/chicken/EggIncubator.vue"
-import EggOutcomeScreen from "~/presentation/components/chicken/EggOutcomeScreen.vue"
 import GraduationScreen from "~/presentation/components/chicken/GraduationScreen.vue"
+import FarmTabs from "~/presentation/components/farm/FarmTabs.vue"
 import PixelButton from "~/presentation/components/ui/PixelButton.vue"
 import PixelCard from "~/presentation/components/ui/PixelCard.vue"
 
@@ -19,19 +17,22 @@ const { t } = useI18n()
 const isDev = import.meta.dev
 
 const {
-  eggs, chicks, resources, loading, outcome, chickenDied, graduatedName,
-  fetchStatus, onAdopted, onOutcome, dismissOutcome, dismissDeath, dismissGraduation,
+  chicks, resources, loading, chickenDied, graduatedName,
+  fetchStatus, dismissDeath, dismissGraduation,
   onSold, onFed, onWatered, onStageStarted, onGraduated,
+  onJobChosen, onSalaryCollected,
 } = useIncubation()
 
-const isEmpty = computed(() => eggs.value.length === 0 && chicks.value.length === 0)
-const showDeathScreen = computed(() => chickenDied.value && isEmpty.value)
+const showDeathScreen = computed(() => chickenDied.value && chicks.value.length === 0)
+const fighterId = computed(() => chicks.value.find(c => c.level >= CHICKEN_LEVELS.APPRENTICE)?.id)
 
 onMounted(fetchStatus)
 </script>
 
 <template>
   <div class="mx-auto max-w-lg px-4 py-6 md:px-6 md:py-10">
+    <FarmTabs />
+
     <h2 class="mb-4 font-ui text-lg font-bold text-pixel-black md:mb-6">
       {{ t("My farm") }}
     </h2>
@@ -43,20 +44,12 @@ onMounted(fetchStatus)
       {{ t("Loading…") }}
     </div>
 
-    <EggOutcomeScreen
-      v-else-if="outcome"
-      :result="outcome.result"
-      :chicken-name="outcome.chickenName"
-      @dismiss="dismissOutcome"
-    />
-
     <GraduationScreen
       v-else-if="graduatedName"
       :chicken-name="graduatedName"
       @dismiss="dismissGraduation"
     />
 
-    <!-- Écran de mort (uniquement si plus aucun poulet ni oeuf) -->
     <PixelCard
       v-else-if="showDeathScreen"
       :title="t('Your chick has died')"
@@ -76,40 +69,37 @@ onMounted(fetchStatus)
       </div>
     </PixelCard>
 
-    <template v-else>
-      <div class="flex flex-col gap-6">
-        <!-- Oeufs en cours d'incubation -->
-        <EggIncubator
-          v-for="egg in eggs"
-          :key="egg.id"
-          :egg="egg"
-          @outcome="onOutcome"
-          @sold="onSold"
-        />
+    <div
+      v-else-if="chicks.length === 0"
+      class="py-12 text-center font-ui text-base text-pixel-gray"
+    >
+      {{ t("No chicken yet") }}
+    </div>
 
-        <!-- Poulets vivants -->
-        <ChickenCard
-          v-for="chick in chicks"
-          :key="chick.id"
-          :chick="chick"
-          :resources="resources"
-          @sold="onSold"
-          @fed="(id, fedAt, flour) => onFed(id, fedAt, flour)"
-          @watered="(id, wateredAt, water) => onWatered(id, wateredAt, water)"
-          @stage-started="(id, stageId, startedAt, completesAt) => onStageStarted(id, stageId, startedAt, completesAt)"
-          @graduated="(id, name) => onGraduated(id, name)"
-        />
-
-        <!-- Adopter un nouvel oeuf -->
-        <EggAdoptForm @adopted="onAdopted" />
-      </div>
-    </template>
+    <div
+      v-else
+      class="flex flex-col gap-6"
+    >
+      <ChickenCard
+        v-for="chick in chicks"
+        :key="chick.id"
+        :chick="chick"
+        :resources="resources"
+        @sold="onSold"
+        @fed="(id, fedAt, flour) => onFed(id, fedAt, flour)"
+        @watered="(id, wateredAt, water) => onWatered(id, wateredAt, water)"
+        @stage-started="(id, stageId, startedAt, completesAt) => onStageStarted(id, stageId, startedAt, completesAt)"
+        @graduated="(id, name) => onGraduated(id, name)"
+        @job-chosen="(id, jobId) => onJobChosen(id, jobId)"
+        @salary-collected="(id) => onSalaryCollected(id)"
+      />
+    </div>
 
     <DebugIncubator
       v-if="isDev"
-      :egg-id="eggs[0]?.id"
       :chick-id="chicks.find(c => c.level === CHICKEN_LEVELS.CHICK)?.id"
       :adolescent-id="chicks.find(c => c.level === CHICKEN_LEVELS.ADOLESCENT)?.id"
+      :fighter-id="fighterId"
       @refresh="fetchStatus"
     />
   </div>

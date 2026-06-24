@@ -1,5 +1,6 @@
 import { CARE_DRIFT_H, CHICK_GROWTH_DAYS, HUNGER_DRAIN_H, INCUBATION_DURATION_H, THIRST_DRAIN_H } from "#shared/chicken/ChickenConstants"
 import { CHICKEN_LEVELS, type ChickenLevel } from "#shared/chicken/ChickenLevel"
+import { SALARY_COOLDOWN_H, type JobId } from "#shared/chicken/Job"
 
 import { ChickenStats } from "../value-objects/ChickenStats"
 import { XPLevel } from "../value-objects/XPLevel"
@@ -28,6 +29,8 @@ export class Chicken {
     public readonly humidityAdjustedAt: Date,
     public readonly temperatureAdjustedAt: Date,
     public readonly turnedAt: Date,
+    public readonly jobId: JobId | null = null,
+    public readonly lastSalaryAt: Date | null = null,
   ) {}
 
   // --- Egg care ---
@@ -59,6 +62,7 @@ export class Chicken {
       action === "humidity" ? now : this.humidityAdjustedAt,
       action === "temperature" ? now : this.temperatureAdjustedAt,
       action === "turn" ? now : this.turnedAt,
+      this.jobId, this.lastSalaryAt,
     )
   }
 
@@ -86,6 +90,7 @@ export class Chicken {
       this.id, this.userId, this.name, this.level, this.xp, this.stats, this.hatchAt,
       now, this.wateredAt,
       this.humidityAdjustedAt, this.temperatureAdjustedAt, this.turnedAt,
+      this.jobId, this.lastSalaryAt,
     )
   }
 
@@ -94,6 +99,7 @@ export class Chicken {
       this.id, this.userId, this.name, this.level, this.xp, this.stats, this.hatchAt,
       this.fedAt, now,
       this.humidityAdjustedAt, this.temperatureAdjustedAt, this.turnedAt,
+      this.jobId, this.lastSalaryAt,
     )
   }
 
@@ -111,6 +117,7 @@ export class Chicken {
       this.xp, this.stats, this.hatchAt,
       this.fedAt, this.wateredAt,
       this.humidityAdjustedAt, this.temperatureAdjustedAt, this.turnedAt,
+      this.jobId, this.lastSalaryAt,
     )
   }
 
@@ -120,10 +127,11 @@ export class Chicken {
       this.xp, this.stats, this.hatchAt,
       this.fedAt, this.wateredAt,
       this.humidityAdjustedAt, this.temperatureAdjustedAt, this.turnedAt,
+      this.jobId, this.lastSalaryAt,
     )
   }
 
-  // --- Combat (future use) ---
+  // --- Combat ---
 
   gainXP(amount: number): Chicken {
     return new Chicken(
@@ -131,6 +139,35 @@ export class Chicken {
       this.xp.add(amount), this.stats, this.hatchAt,
       this.fedAt, this.wateredAt,
       this.humidityAdjustedAt, this.temperatureAdjustedAt, this.turnedAt,
+      this.jobId, this.lastSalaryAt,
+    )
+  }
+
+  // --- Job ---
+
+  chooseJob(jobId: JobId): Chicken {
+    return new Chicken(
+      this.id, this.userId, this.name, this.level,
+      this.xp, this.stats, this.hatchAt,
+      this.fedAt, this.wateredAt,
+      this.humidityAdjustedAt, this.temperatureAdjustedAt, this.turnedAt,
+      jobId, this.lastSalaryAt,
+    )
+  }
+
+  canCollectSalary(now = new Date()): boolean {
+    if (!this.jobId) return false
+    if (!this.lastSalaryAt) return true
+    return now.getTime() - this.lastSalaryAt.getTime() >= SALARY_COOLDOWN_H * MS_PER_HOUR
+  }
+
+  collectSalary(now = new Date()): Chicken {
+    return new Chicken(
+      this.id, this.userId, this.name, this.level,
+      this.xp, this.stats, this.hatchAt,
+      this.fedAt, this.wateredAt,
+      this.humidityAdjustedAt, this.temperatureAdjustedAt, this.turnedAt,
+      this.jobId, now,
     )
   }
 }
@@ -142,5 +179,6 @@ export function createEgg(userId: number, name: string, now = new Date()): Omit<
     new XPLevel(0), new ChickenStats(FULL_STAT, FULL_STAT, FULL_STAT, 0),
     hatchAt, null, null,
     now, now, now,
+    null, null,
   ) as Chicken & { id: 0 }
 }

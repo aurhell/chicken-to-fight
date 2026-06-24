@@ -4,6 +4,7 @@ export type CreateUserData = {
   username: string
   email: string
   passwordHash: string
+  gold?: number
 }
 
 export type IUserRepository = {

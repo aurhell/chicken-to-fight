@@ -4,11 +4,14 @@ import { useI18n } from "vue-i18n"
 
 import { CHICK_GROWTH_DAYS, HUNGER_DRAIN_H, THIRST_DRAIN_H } from "#shared/chicken/ChickenConstants"
 import { CHICKEN_LEVELS } from "#shared/chicken/ChickenLevel"
+import { XP_FOR_JOB } from "#shared/chicken/Job"
 import { CHICKEN_SELL_PRICES } from "#shared/chicken/SellPrice"
 import duckBaseImg from "~/assets/images/duck-base.png"
 import ducklingImg from "~/assets/images/duckling.png"
 import { careBarPct } from "~/domain/chicken/ChickCare"
 import { useChickenApi, type ChickStatus, type Resources } from "~/infrastructure/api/chicken"
+import JobPicker from "~/presentation/components/chicken/JobPicker.vue"
+import SalaryCollector from "~/presentation/components/chicken/SalaryCollector.vue"
 import StagePanel from "~/presentation/components/chicken/StagePanel.vue"
 import PixelButton from "~/presentation/components/ui/PixelButton.vue"
 import PixelCard from "~/presentation/components/ui/PixelCard.vue"
@@ -28,6 +31,8 @@ const emit = defineEmits<{
   watered: [chickenId: number, wateredAt: string, water: number]
   stageStarted: [chickenId: number, stageId: string, startedAt: string, completesAt: string]
   graduated: [chickenId: number, name: string]
+  jobChosen: [chickenId: number, jobId: string]
+  salaryCollected: [chickenId: number]
 }>()
 
 const { t } = useI18n()
@@ -39,6 +44,7 @@ const watering = ref(false)
 const isChick = computed(() => props.chick.level === CHICKEN_LEVELS.CHICK)
 const isAdolescent = computed(() => props.chick.level === CHICKEN_LEVELS.ADOLESCENT)
 const isFighter = computed(() => props.chick.level >= CHICKEN_LEVELS.APPRENTICE)
+const fighterXpPct = computed(() => Math.min(FULL_PCT, Math.round((props.chick.xp / XP_FOR_JOB) * FULL_PCT)))
 
 // Real-time now for bar drain calculation
 const now = ref(Date.now())
@@ -110,12 +116,30 @@ async function sell() {
 
       <!-- Fighter (apprenti et au-delà) -->
       <template v-if="isFighter">
-        <p class="font-ui text-base text-pixel-black">
-          {{ t("Apprentice Fighter") }}
-        </p>
-        <p class="font-ui text-sm text-pixel-gray">
-          {{ t("Ready for combat. Coming soon.") }}
-        </p>
+        <div class="flex w-full flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class="font-ui text-base font-bold text-pixel-black">{{ t("Apprentice Fighter") }}</span>
+            <span class="font-ui text-sm font-bold text-pixel-gold">{{ chick.xp }} {{ t("XP") }}</span>
+          </div>
+          <div class="h-3 w-full overflow-hidden border-4 border-pixel-black bg-pixel-white">
+            <div
+              class="h-full bg-pixel-gold transition-all duration-300"
+              :style="{ width: `${fighterXpPct}%` }"
+            />
+          </div>
+        </div>
+        <SalaryCollector
+          v-if="chick.jobId"
+          class="w-full"
+          :chick="chick"
+          @salary-collected="(goldEarned, newGold) => { emit('salaryCollected', chick.id); void goldEarned; void newGold }"
+        />
+        <JobPicker
+          v-else
+          class="w-full"
+          :chick="chick"
+          @job-chosen="(jobId) => emit('jobChosen', chick.id, jobId)"
+        />
       </template>
 
       <!-- Adolescent -->

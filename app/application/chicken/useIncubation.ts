@@ -13,7 +13,7 @@ export function useIncubation() {
   const chicks = ref<ChickStatus[]>([])
   const resources = ref<Resources>({
     water: 0,
-    flour: 0, 
+    flour: 0,
   })
   const loading = ref(true)
   const outcome = ref<HatchOutcome | null>(null)
@@ -65,12 +65,12 @@ export function useIncubation() {
     if (idx !== -1) {
       chicks.value = chicks.value.map((c, i) => i === idx ? {
         ...c,
-        fedAt, 
+        fedAt,
       } : c)
     }
     resources.value = {
       ...resources.value,
-      flour, 
+      flour,
     }
   }
 
@@ -99,7 +99,7 @@ export function useIncubation() {
               ...s,
               status: "in_progress" as const,
               startedAt,
-              completesAt, 
+              completesAt,
             }
             : s,
         )
@@ -112,7 +112,7 @@ export function useIncubation() {
               stageId,
               status: "in_progress" as const,
               startedAt,
-              completesAt, 
+              completesAt,
             },
           ],
         }
@@ -127,6 +127,22 @@ export function useIncubation() {
 
   function dismissGraduation() {
     graduatedName.value = null
+  }
+
+  async function onJobChosen(chickenId: number, jobId: string) {
+    chicks.value = chicks.value.map(c =>
+      c.id === chickenId ? {
+        ...c,
+        jobId, 
+      } : c,
+    )
+    await auth.fetchMe()
+  }
+
+  async function onSalaryCollected(chickenId: number) {
+    await fetchStatus()
+    await auth.fetchMe()
+    void chickenId
   }
 
   return {
@@ -148,5 +164,7 @@ export function useIncubation() {
     onWatered,
     onStageStarted,
     onGraduated,
+    onJobChosen,
+    onSalaryCollected,
   }
 }
